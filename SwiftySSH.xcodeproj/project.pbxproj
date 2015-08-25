@@ -1,0 +1,525 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CD156B8A1B87C0DF00CDD8F3 /* CommandChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD156B891B87C0DF00CDD8F3 /* CommandChain.swift */; };
+		CD156B8C1B87C8CA00CDD8F3 /* CommandChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD156B8B1B87C8CA00CDD8F3 /* CommandChainTests.swift */; };
+		CD156B901B87E7C200CDD8F3 /* DirectTCPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD156B8F1B87E7C200CDD8F3 /* DirectTCPTests.swift */; };
+		CD156B921B87EAAF00CDD8F3 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD156B911B87EAAF00CDD8F3 /* Manager.swift */; };
+		CD24F8821B868C75008DFB41 /* helpers.c in Sources */ = {isa = PBXBuildFile; fileRef = CD24F8801B868C75008DFB41 /* helpers.c */; };
+		CD470A2C1B868FA300D5ACE4 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2B1B868FA300D5ACE4 /* libssh2.a */; };
+		CD470A2E1B868FBF00D5ACE4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2D1B868FBF00D5ACE4 /* libz.tbd */; };
+		CD470A301B868FCB00D5ACE4 /* libcrypto.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2F1B868FCB00D5ACE4 /* libcrypto.tbd */; };
+		CD470A321B86911600D5ACE4 /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = CD470A311B86911600D5ACE4 /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD470A701B8697A100D5ACE4 /* SwiftySSH.h in Headers */ = {isa = PBXBuildFile; fileRef = CD470A6F1B8697A100D5ACE4 /* SwiftySSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD470A781B8697D900D5ACE4 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A711B8697D900D5ACE4 /* Channel.swift */; };
+		CD470A791B8697D900D5ACE4 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A721B8697D900D5ACE4 /* Error.swift */; };
+		CD470A7A1B8697D900D5ACE4 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A731B8697D900D5ACE4 /* Logger.swift */; };
+		CD470A7D1B8697D900D5ACE4 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A761B8697D900D5ACE4 /* Session.swift */; };
+		CD470A7E1B8697D900D5ACE4 /* SocketUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A771B8697D900D5ACE4 /* SocketUtils.swift */; };
+		CD470A801B8698B400D5ACE4 /* helpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CD470A7F1B8698A000D5ACE4 /* helpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD470A851B86994C00D5ACE4 /* SocketUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A821B86994C00D5ACE4 /* SocketUtilsTests.swift */; };
+		CD470A861B86994C00D5ACE4 /* SessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A831B86994C00D5ACE4 /* SessionTests.swift */; };
+		CD849CCC19F99A670074F98B /* SwiftySSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD849CC019F99A670074F98B /* SwiftySSH.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CD849CCD19F99A670074F98B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD849CB719F99A670074F98B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD849CBF19F99A670074F98B;
+			remoteInfo = SwiftySSH;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CD156BBD1B891AEB00CDD8F3 /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		CD156B891B87C0DF00CDD8F3 /* CommandChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandChain.swift; sourceTree = "<group>"; };
+		CD156B8B1B87C8CA00CDD8F3 /* CommandChainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandChainTests.swift; sourceTree = "<group>"; };
+		CD156B8F1B87E7C200CDD8F3 /* DirectTCPTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectTCPTests.swift; sourceTree = "<group>"; };
+		CD156B911B87EAAF00CDD8F3 /* Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		CD24F8801B868C75008DFB41 /* helpers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = helpers.c; sourceTree = "<group>"; };
+		CD470A2B1B868FA300D5ACE4 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = lib/lib/libssh2.a; sourceTree = "<group>"; };
+		CD470A2D1B868FBF00D5ACE4 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		CD470A2F1B868FCB00D5ACE4 /* libcrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcrypto.tbd; path = usr/lib/libcrypto.tbd; sourceTree = SDKROOT; };
+		CD470A311B86911600D5ACE4 /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libssh2.h; path = lib/include/libssh2/libssh2.h; sourceTree = "<group>"; };
+		CD470A6F1B8697A100D5ACE4 /* SwiftySSH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftySSH.h; sourceTree = "<group>"; };
+		CD470A711B8697D900D5ACE4 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		CD470A721B8697D900D5ACE4 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		CD470A731B8697D900D5ACE4 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		CD470A761B8697D900D5ACE4 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		CD470A771B8697D900D5ACE4 /* SocketUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketUtils.swift; sourceTree = "<group>"; };
+		CD470A7F1B8698A000D5ACE4 /* helpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = helpers.h; sourceTree = "<group>"; };
+		CD470A821B86994C00D5ACE4 /* SocketUtilsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketUtilsTests.swift; sourceTree = "<group>"; };
+		CD470A831B86994C00D5ACE4 /* SessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionTests.swift; sourceTree = "<group>"; };
+		CD849CC019F99A670074F98B /* SwiftySSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftySSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD849CC419F99A670074F98B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD849CCB19F99A670074F98B /* SwiftySSHTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftySSHTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD849CD119F99A670074F98B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CD849CBC19F99A670074F98B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD470A301B868FCB00D5ACE4 /* libcrypto.tbd in Frameworks */,
+				CD470A2E1B868FBF00D5ACE4 /* libz.tbd in Frameworks */,
+				CD470A2C1B868FA300D5ACE4 /* libssh2.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD849CC819F99A670074F98B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD849CCC19F99A670074F98B /* SwiftySSH.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CD470A8B1B869E4400D5ACE4 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				CD470A2F1B868FCB00D5ACE4 /* libcrypto.tbd */,
+				CD470A2D1B868FBF00D5ACE4 /* libz.tbd */,
+				CD470A2B1B868FA300D5ACE4 /* libssh2.a */,
+				CD470A311B86911600D5ACE4 /* libssh2.h */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+		CD849CB619F99A670074F98B = {
+			isa = PBXGroup;
+			children = (
+				CD470A8B1B869E4400D5ACE4 /* lib */,
+				CD849CC219F99A670074F98B /* SwiftySSH */,
+				CD849CCF19F99A670074F98B /* SwiftySSHTests */,
+				CD849CC119F99A670074F98B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CD849CC119F99A670074F98B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CD849CC019F99A670074F98B /* SwiftySSH.framework */,
+				CD849CCB19F99A670074F98B /* SwiftySSHTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CD849CC219F99A670074F98B /* SwiftySSH */ = {
+			isa = PBXGroup;
+			children = (
+				CD470A711B8697D900D5ACE4 /* Channel.swift */,
+				CD470A721B8697D900D5ACE4 /* Error.swift */,
+				CD470A731B8697D900D5ACE4 /* Logger.swift */,
+				CD470A761B8697D900D5ACE4 /* Session.swift */,
+				CD156B911B87EAAF00CDD8F3 /* Manager.swift */,
+				CD156B891B87C0DF00CDD8F3 /* CommandChain.swift */,
+				CD470A771B8697D900D5ACE4 /* SocketUtils.swift */,
+				CD470A6F1B8697A100D5ACE4 /* SwiftySSH.h */,
+				CD24F8801B868C75008DFB41 /* helpers.c */,
+				CD470A7F1B8698A000D5ACE4 /* helpers.h */,
+				CD849CC319F99A670074F98B /* Supporting Files */,
+			);
+			path = SwiftySSH;
+			sourceTree = "<group>";
+		};
+		CD849CC319F99A670074F98B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CD849CC419F99A670074F98B /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CD849CCF19F99A670074F98B /* SwiftySSHTests */ = {
+			isa = PBXGroup;
+			children = (
+				CD470A821B86994C00D5ACE4 /* SocketUtilsTests.swift */,
+				CD470A831B86994C00D5ACE4 /* SessionTests.swift */,
+				CD156B8F1B87E7C200CDD8F3 /* DirectTCPTests.swift */,
+				CD156B8B1B87C8CA00CDD8F3 /* CommandChainTests.swift */,
+				CD849CD019F99A670074F98B /* Supporting Files */,
+			);
+			path = SwiftySSHTests;
+			sourceTree = "<group>";
+		};
+		CD849CD019F99A670074F98B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CD849CD119F99A670074F98B /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		CD849CBD19F99A670074F98B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD470A701B8697A100D5ACE4 /* SwiftySSH.h in Headers */,
+				CD470A321B86911600D5ACE4 /* libssh2.h in Headers */,
+				CD470A801B8698B400D5ACE4 /* helpers.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		CD849CBF19F99A670074F98B /* SwiftySSH */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD849CD619F99A670074F98B /* Build configuration list for PBXNativeTarget "SwiftySSH" */;
+			buildPhases = (
+				CD849CBB19F99A670074F98B /* Sources */,
+				CD849CBC19F99A670074F98B /* Frameworks */,
+				CD849CBD19F99A670074F98B /* Headers */,
+				CD849CBE19F99A670074F98B /* Resources */,
+				CD156BBD1B891AEB00CDD8F3 /* Embed XPC Services */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftySSH;
+			productName = SwiftySSH;
+			productReference = CD849CC019F99A670074F98B /* SwiftySSH.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CD849CCA19F99A670074F98B /* SwiftySSHTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD849CD919F99A680074F98B /* Build configuration list for PBXNativeTarget "SwiftySSHTests" */;
+			buildPhases = (
+				CD849CC719F99A670074F98B /* Sources */,
+				CD849CC819F99A670074F98B /* Frameworks */,
+				CD849CC919F99A670074F98B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CD849CCE19F99A670074F98B /* PBXTargetDependency */,
+			);
+			name = SwiftySSHTests;
+			productName = SwiftySSHTests;
+			productReference = CD849CCB19F99A670074F98B /* SwiftySSHTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CD849CB719F99A670074F98B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Vladimir Solomenchuk";
+				TargetAttributes = {
+					CD849CBF19F99A670074F98B = {
+						CreatedOnToolsVersion = 6.1;
+					};
+					CD849CCA19F99A670074F98B = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = CD849CBA19F99A670074F98B /* Build configuration list for PBXProject "SwiftySSH" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CD849CB619F99A670074F98B;
+			productRefGroup = CD849CC119F99A670074F98B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CD849CBF19F99A670074F98B /* SwiftySSH */,
+				CD849CCA19F99A670074F98B /* SwiftySSHTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CD849CBE19F99A670074F98B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD849CC919F99A670074F98B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CD849CBB19F99A670074F98B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD470A7A1B8697D900D5ACE4 /* Logger.swift in Sources */,
+				CD470A7E1B8697D900D5ACE4 /* SocketUtils.swift in Sources */,
+				CD156B8A1B87C0DF00CDD8F3 /* CommandChain.swift in Sources */,
+				CD156B921B87EAAF00CDD8F3 /* Manager.swift in Sources */,
+				CD470A791B8697D900D5ACE4 /* Error.swift in Sources */,
+				CD470A7D1B8697D900D5ACE4 /* Session.swift in Sources */,
+				CD24F8821B868C75008DFB41 /* helpers.c in Sources */,
+				CD470A781B8697D900D5ACE4 /* Channel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD849CC719F99A670074F98B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD156B901B87E7C200CDD8F3 /* DirectTCPTests.swift in Sources */,
+				CD470A851B86994C00D5ACE4 /* SocketUtilsTests.swift in Sources */,
+				CD156B8C1B87C8CA00CDD8F3 /* CommandChainTests.swift in Sources */,
+				CD470A861B86994C00D5ACE4 /* SessionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CD849CCE19F99A670074F98B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD849CBF19F99A670074F98B /* SwiftySSH */;
+			targetProxy = CD849CCD19F99A670074F98B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CD849CD419F99A670074F98B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CD849CD519F99A670074F98B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CD849CD719F99A670074F98B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = SwiftySSH/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CD849CD819F99A670074F98B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = SwiftySSH/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		CD849CDA19F99A680074F98B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SwiftySSHTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CD849CDB19F99A680074F98B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SwiftySSHTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CD849CBA19F99A670074F98B /* Build configuration list for PBXProject "SwiftySSH" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD849CD419F99A670074F98B /* Debug */,
+				CD849CD519F99A670074F98B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD849CD619F99A670074F98B /* Build configuration list for PBXNativeTarget "SwiftySSH" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD849CD719F99A670074F98B /* Debug */,
+				CD849CD819F99A670074F98B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD849CD919F99A680074F98B /* Build configuration list for PBXNativeTarget "SwiftySSHTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD849CDA19F99A680074F98B /* Debug */,
+				CD849CDB19F99A680074F98B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CD849CB719F99A670074F98B /* Project object */;
+}
