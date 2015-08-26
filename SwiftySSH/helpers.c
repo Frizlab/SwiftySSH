@@ -10,12 +10,6 @@
 #import <arpa/inet.h>
 #import <sys/select.h>
 
-inline LIBSSH2_API void *libssh2_session_callback_set_helper(LIBSSH2_SESSION *session,
-                                                             int cbtype, void(*callback) (LIBSSH2_SESSION *session, int reason, const char *message, int message_len, const char *language, int language_len, void **abstract)){
-    return libssh2_session_callback_set(session, cbtype, callback);
-}
-
-
 int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     struct timeval timeout;
     

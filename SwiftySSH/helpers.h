@@ -11,6 +11,4 @@
 
 #import "libssh2.h"
 extern int waitsocket(int socket_fd, LIBSSH2_SESSION *session);
-LIBSSH2_API void *libssh2_session_callback_set_helper(LIBSSH2_SESSION *session,
-                                                      int cbtype, void (LIBSSH2_SESSION *session, int reason, const char *message, int message_len, const char *language, int language_len, void **abstract));
 #endif /* helpers_h */

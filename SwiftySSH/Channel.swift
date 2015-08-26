@@ -53,13 +53,15 @@ public class Channel
     public func open() -> Self
     {
         session.onConnect { (session, error) -> Void in
-            guard error == nil else {
+            guard let queue = session.queue where error == nil else {
+                let error = error ?? SSHError.NotConnected
                 self.openChain.value = error
-                logger.error("unable to channel \(error)")
+                logger.error("unable to create channel \(error)")
                 return
             }
             
-            dispatch_async(session.queue, { () -> Void in
+            
+            dispatch_async(queue, { () -> Void in
                 logger.debug("open channel")
                 libssh2_session_set_blocking(self.session.session, 1)
                 self.channel = libssh2_channel_direct_tcpip_ex(self.session.session, self.remoteHost.cStringUsingEncoding(NSUTF8StringEncoding)!, Int32(self.remotePort), self.remoteHost.cStringUsingEncoding(NSUTF8StringEncoding)!, Int32(self.remotePort))
@@ -155,12 +157,12 @@ public class Channel
     }
     
     public func write(buffer: [UInt8], handler:(ErrorType?) -> Void) {
-        guard self.channel != nil && self.channel! != nil else {
+        guard let queue = session.queue where self.channel != nil && self.channel! != nil else {
             handler(SSHError.NotConnected)
             return
         }
         
-        dispatch_async(session.queue) { () -> Void in
+        dispatch_async(queue) { () -> Void in
             var rc: ssize_t
             
             var wr: ssize_t = 0

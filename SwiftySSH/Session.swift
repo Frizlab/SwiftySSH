@@ -42,15 +42,60 @@ public class Session {
     private let user: String
     private var expectedFingerprint: Fingerprint?
     private var authentication: Authentication?
-    let queue = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
+    var queue: dispatch_queue_t?
     internal var socket: CFSocket?
     private var connectChain = CommandChain<ErrorType?>()
     private var disconnectChain = CommandChain<ErrorType?>()
+    private var keepAliveSource: dispatch_source_t!
+    private var keepaliveInterval:  UInt
+    private var errorCounter = 0
+    private let maxErrorCounter: Int
 
-    required public init(_ user: String, host: String, port: UInt16){
+    
+    required public init(_ user: String, host: String, port: UInt16, keepaliveInterval: UInt = 10){
         self.host = host
         self.port = port
         self.user = user
+        self.keepaliveInterval = keepaliveInterval
+        maxErrorCounter = 1 / Int(keepaliveInterval)
+    }
+    
+    private func setupKeepAlive() {
+        if keepAliveSource != nil {
+            dispatch_source_cancel(keepAliveSource)
+            keepAliveSource = nil
+        }
+        
+        guard keepaliveInterval > 0 else {
+            return
+        }
+        
+        libssh2_keepalive_config (self.session, 1, UInt32(keepaliveInterval))
+        
+        keepAliveSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue)
+        
+        let interval = UInt64(keepaliveInterval) * NSEC_PER_SEC
+        dispatch_source_set_timer(keepAliveSource, dispatch_walltime(nil, 0), interval, 0);
+        
+        dispatch_source_set_event_handler(keepAliveSource, {
+            var t = Int32(self.keepaliveInterval)
+            let rc = libssh2_keepalive_send(self.session, &t)
+            
+            guard rc == 0 else {
+                logger.debug("keepalive error \(self.sshError())")
+                self.errorCounter++
+                if self.errorCounter >= self.maxErrorCounter {
+                    logger.debug("too many errors, closing session")
+                    let error = self.sshError() ?? SSHError.NotConnected
+                    self.disconnectWithError(error)
+                }
+                return
+            }
+            
+            self.errorCounter = 0
+            
+        })
+        dispatch_resume(keepAliveSource)
     }
     
     func sshError() -> SSHError? {
@@ -100,15 +145,10 @@ public class Session {
             cleanup()
             return self
         }
-        
-        dispatch_async(queue, {
+        queue = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
+        dispatch_async(queue!, {
             var s = self.self
             self.session = libssh2_session_init_ex(nil, nil, nil, &s)
-            
-            //FIXME: does not calling at all
-            libssh2_session_callback_set_helper(self.session, LIBSSH2_CALLBACK_DISCONNECT, { (session, reason, message, message_len, language, language_len, abstract) -> Void in
-                print("DISCONNECT HANDLER")
-            })
             
             guard let addresses = resolveHost(self.host) else {
                 self.connectChain.value = SSHError.Unknown(msg: "unknown host \(self.host)")
@@ -164,12 +204,14 @@ public class Session {
             case .Password(let password):
                 if self.authenticateByPassword(password) {
                     self.connectChain.value = nil
+                    self.setupKeepAlive()
                     return
                 }
                 
             case .PublicKey(let publicKeyPath, let privateKeyPath, let passphrase):
                 if self.authenticateByPublicKey(publicKeyPath, privateKeyPath: privateKeyPath, passphrase: passphrase) {
                     self.connectChain.value = nil
+                    self.setupKeepAlive()
                     return
                 }
 
@@ -183,12 +225,20 @@ public class Session {
         return self
     }
 
+    private func disconnectWithError (error: ErrorType) {
+        logger.error("closing session with error: \(error)")
+        disconnectChain.value = error
+        cleanup()
+    }
+    
     public func disconnect() {
         disconnectChain.value = nil
         cleanup()
     }
     
     public func cleanup() {
+        //queue pasing and releasing causes crash
+        self.queue = nil
         
         if socket != nil {
             CFSocketInvalidate(socket)
@@ -199,6 +249,15 @@ public class Session {
             libssh2_session_disconnect_ex(session, SSH_DISCONNECT_BY_APPLICATION, "app quit", "")
             libssh2_session_free(session);
             session = nil
+        }
+        
+        if keepAliveSource != nil {
+            dispatch_source_cancel(keepAliveSource)
+            keepAliveSource = nil
+        }
+        
+        if keepAliveSource != nil {
+            dispatch_source_cancel(keepAliveSource)
         }
     }
     
