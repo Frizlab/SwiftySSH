@@ -48,16 +48,16 @@ public class Session {
     private var disconnectChain = CommandChain<ErrorType?>()
     private var keepAliveSource: dispatch_source_t!
     private var keepaliveInterval:  UInt
-    private var errorCounter = 0
-    private let maxErrorCounter: Int
+    private var errorCounter: UInt = 0
+    private let maxErrorCounter: UInt
 
     
-    required public init(_ user: String, host: String, port: UInt16, keepaliveInterval: UInt = 10){
+    required public init(_ user: String, host: String, port: UInt16, keepaliveInterval: UInt = 10, maxErrorCounter: UInt = 6){
         self.host = host
         self.port = port
         self.user = user
         self.keepaliveInterval = keepaliveInterval
-        maxErrorCounter = 1 / Int(keepaliveInterval)
+        self.maxErrorCounter = maxErrorCounter
     }
     
     private func setupKeepAlive() {
