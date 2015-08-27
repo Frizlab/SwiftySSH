@@ -141,7 +141,7 @@ public class Session {
 
     public func connect() -> Self {
         guard SSHInit.initialized else {
-            disconnectChain.value = SSHError.NotConnected
+            connectChain.value = sshError()
             cleanup()
             return self
         }
