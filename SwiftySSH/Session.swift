@@ -162,15 +162,15 @@ public class Session {
             }
 
             
-            // Set non-blocking mode
-            libssh2_session_set_blocking(self.session, 1)
-            
             self.socket = sock
             
             // Start the session
-            let rc = libssh2_session_handshake(self.session, CFSocketGetNative(self.socket))
-            if rc != 0 {
-                self.connectChain.value = self.sshError() ?? SSHError.Unknown(msg: "unable to perform handshake \(rc)")
+            
+            do {
+                try callSSH(self, self.timeout, libssh2_session_handshake(self.session, CFSocketGetNative(self.socket)))
+            }
+            catch let e {
+                self.connectChain.value = e
                 self.cleanup()
                 return
             }
@@ -307,13 +307,18 @@ public class Session {
             if supportedAuthenticationMethods.contains("password")
             {
                 
-                let error = libssh2_userauth_password_ex(session,
-                                            user.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                                            UInt32(user.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
-                                            password.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                                            UInt32(password.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
-                                            nil)
-                return error == 0
+                do {
+                    try callSSH(self, self.timeout, libssh2_userauth_password_ex(session,
+                        user.cStringUsingEncoding(NSUTF8StringEncoding)!,
+                        UInt32(user.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
+                        password.cStringUsingEncoding(NSUTF8StringEncoding)!,
+                        UInt32(password.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
+                        nil))
+                    return true
+                }
+                catch {
+                    return false
+                }
             }
         }
         
@@ -326,13 +331,19 @@ public class Session {
         if let supportedAuthenticationMethods = supportedAuthenticationMethods {
             if supportedAuthenticationMethods.contains("publickey")
             {
-                let error = libssh2_userauth_publickey_fromfile_ex(session,
-                    user.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                    UInt32(user.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
-                    publicKeyPath.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                    privateKeyPath.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                    passphrase)
-                return error == 0
+                do {
+                    try callSSH(self, self.timeout, libssh2_userauth_publickey_fromfile_ex(session,
+                        user.cStringUsingEncoding(NSUTF8StringEncoding)!,
+                        UInt32(user.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
+                        publicKeyPath.cStringUsingEncoding(NSUTF8StringEncoding)!,
+                        privateKeyPath.cStringUsingEncoding(NSUTF8StringEncoding)!,
+                        passphrase))
+                    
+                    return true
+                }
+                catch {
+                    return false
+                }
             }
         }
         

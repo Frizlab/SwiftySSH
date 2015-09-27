@@ -63,17 +63,15 @@ public class Channel
             
             dispatch_async(queue, { () -> Void in
                 logger.debug("open channel")
-                libssh2_session_set_blocking(self.session.session, 1)
-                self.channel = libssh2_channel_direct_tcpip_ex(self.session.session, self.remoteHost.cStringUsingEncoding(NSUTF8StringEncoding)!, Int32(self.remotePort), self.remoteHost.cStringUsingEncoding(NSUTF8StringEncoding)!, Int32(self.remotePort))
                 
-                guard self.channel != nil && self.channel! != nil else {
-                    let error = self.session.sshError() ?? SSHError.NotConnected
+                do {
+                    self.channel = try callSSHNotNull(self.session, self.timeout, libssh2_channel_direct_tcpip_ex(self.session.session, self.remoteHost.cStringUsingEncoding(NSUTF8StringEncoding)!, Int32(self.remotePort), self.remoteHost.cStringUsingEncoding(NSUTF8StringEncoding)!, Int32(self.remotePort)))
+                }
+                catch let e{
                     logger.error("unable to create channel \(error)")
                     self.openChain.value = error
                     return
                 }
-                
-                libssh2_session_set_blocking(self.session.session, 0)
                 
                 self.readSource = dispatch_source_create(
                     DISPATCH_SOURCE_TYPE_READ,
@@ -95,7 +93,7 @@ public class Channel
                     defer {buffer.dealloc(bufferSize)}
                     let time = CFAbsoluteTimeGetCurrent() + self.timeout
                     
-                    while self.channel != nil && self.channel! != nil {
+                    while self.channel != nil {
                         let rc = libssh2_channel_read_ex(self.channel, self.streamId, UnsafeMutablePointer<Int8>(buffer), bufferSize)
                         
                         if rc == ssize_t(LIBSSH2_ERROR_EAGAIN) {
@@ -113,7 +111,7 @@ public class Channel
                             if (rc == ssize_t(LIBSSH2_ERROR_SOCKET_RECV)) {
                                 logger.error("Error received, closing channel...")
                                 self.cleanup()
-                                self.readChain.value = (nil, self.session.sshError() ?? SSHError.Unknown(msg: "libssh2_channel_write \(rc)"))
+                                self.readChain.value = (nil, self.session.sshError() ?? SSHError.Unknown(msg: "libssh2_channel_read_ex \(rc)"))
                             }
                             return
                         }
@@ -122,9 +120,18 @@ public class Channel
                         let data = Array(UnsafeBufferPointer(start: buffer, count: rc))
                         self.readChain.value = (data, nil)
                         
-                        if (libssh2_channel_eof(self.channel) == 1) {
-                            logger.debug("Host EOF received")
+                        
+                        let eof = libssh2_channel_eof(self.channel)
+                        
+                        if eof == 1 {
+                            logger.debug("channel EOF received")
                             self.close()
+                            return
+                        }
+                        else if eof < 0 {
+                            logger.error("Error received, closing channel...")
+                            self.cleanup()
+                            self.readChain.value = (nil, self.session.sshError() ?? SSHError.Unknown(msg: "libssh2_channel_eof \(rc)"))
                             return
                         }
                     }
@@ -140,7 +147,7 @@ public class Channel
     
     private func cleanup(){
         if self.channel != nil && self.channel! != nil {
-            logger.debug("cleanup")
+            logger.debug("channel cleanup")
             libssh2_channel_close(self.channel)
             libssh2_channel_wait_closed(self.channel)
             libssh2_channel_free(self.channel)

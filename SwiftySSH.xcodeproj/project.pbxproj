@@ -26,6 +26,7 @@
 		CD470A851B86994C00D5ACE4 /* SocketUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A821B86994C00D5ACE4 /* SocketUtilsTests.swift */; };
 		CD470A861B86994C00D5ACE4 /* SessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A831B86994C00D5ACE4 /* SessionTests.swift */; };
 		CD849CCC19F99A670074F98B /* SwiftySSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD849CC019F99A670074F98B /* SwiftySSH.framework */; };
+		CDAA1C6A1BB78ABC009AE9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAA1C691BB78ABC009AE9BD /* Utils.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 		CD849CC419F99A670074F98B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD849CCB19F99A670074F98B /* SwiftySSHTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftySSHTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD849CD119F99A670074F98B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDAA1C691BB78ABC009AE9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				CD470A711B8697D900D5ACE4 /* Channel.swift */,
+				CDAA1C691BB78ABC009AE9BD /* Utils.swift */,
 				CD470A721B8697D900D5ACE4 /* Error.swift */,
 				CD470A731B8697D900D5ACE4 /* Logger.swift */,
 				CD470A761B8697D900D5ACE4 /* Session.swift */,
@@ -288,6 +291,7 @@
 			files = (
 				CD470A7A1B8697D900D5ACE4 /* Logger.swift in Sources */,
 				CD470A7E1B8697D900D5ACE4 /* SocketUtils.swift in Sources */,
+				CDAA1C6A1BB78ABC009AE9BD /* Utils.swift in Sources */,
 				CD156B8A1B87C0DF00CDD8F3 /* CommandChain.swift in Sources */,
 				CD156B921B87EAAF00CDD8F3 /* Manager.swift in Sources */,
 				CD470A791B8697D900D5ACE4 /* Error.swift in Sources */,
