@@ -8,7 +8,8 @@
 
 import Foundation
 
-func callSSH(session: Session, _ timeout: CFAbsoluteTime, @autoclosure _ f: ()->Int32) throws -> Int32 {
+@discardableResult
+func callSSH(_ session: Session, _ timeout: CFAbsoluteTime, _ f: @autoclosure () -> Int32) throws -> Int32 {
     
     let time = CFAbsoluteTimeGetCurrent() + timeout
     
@@ -16,7 +17,7 @@ func callSSH(session: Session, _ timeout: CFAbsoluteTime, @autoclosure _ f: ()->
 
     while rc == LIBSSH2_ERROR_EAGAIN {
         if (timeout > 0 && time < CFAbsoluteTimeGetCurrent()) {
-            throw SSHError.Timeout
+            throw SSHError.timeout
         }
 
         rc = f()
@@ -26,13 +27,14 @@ func callSSH(session: Session, _ timeout: CFAbsoluteTime, @autoclosure _ f: ()->
             throw error
         }
         
-        throw SSHError.Unknown(msg: "Unknown SSH error \(rc)")
+        throw SSHError.unknown(msg: "Unknown SSH error \(rc)")
     }
     
     return rc
 }
 
-func callSSHNotNull(session: Session, _ timeout: CFAbsoluteTime, @autoclosure _ f: ()->COpaquePointer) throws -> COpaquePointer {
+@discardableResult
+func callSSHNotNull(_ session: Session, _ timeout: CFAbsoluteTime, _ f: @autoclosure () -> OpaquePointer?) throws -> OpaquePointer? {
     
     let time = CFAbsoluteTimeGetCurrent() + timeout
     
@@ -41,7 +43,7 @@ func callSSHNotNull(session: Session, _ timeout: CFAbsoluteTime, @autoclosure _ 
     while rc == nil {
         if  libssh2_session_last_error(session.session, nil, nil, 0) == LIBSSH2_ERROR_EAGAIN {
             if timeout > 0 && time < CFAbsoluteTimeGetCurrent() {
-                throw SSHError.Timeout
+                throw SSHError.timeout
             }
         }
         else {
@@ -49,7 +51,7 @@ func callSSHNotNull(session: Session, _ timeout: CFAbsoluteTime, @autoclosure _ 
                 throw error
             }
             
-            throw SSHError.Unknown(msg: "Unknown SSH error \(rc)")
+            throw SSHError.unknown(msg: "Unknown SSH error \(rc)")
         }
         
         rc = f()

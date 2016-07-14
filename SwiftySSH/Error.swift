@@ -8,24 +8,24 @@
 
 import Foundation
 
-public enum SSHError: ErrorType, CustomStringConvertible {
-    case NotConnected
-    case Timeout
-    case InvalidFingerprint
-    case Unknown(msg: String)
-    case SSHError(code: Int32, msg: String)
+public enum SSHError: ErrorProtocol, CustomStringConvertible {
+    case notConnected
+    case timeout
+    case invalidFingerprint
+    case unknown(msg: String)
+    case sshError(code: Int32, msg: String)
     
     public var description: String {
         switch self {
-        case NotConnected:
+        case notConnected:
                 return "Not connected"
-        case Timeout:
+        case timeout:
             return "connection timeout"
-        case InvalidFingerprint:
+        case invalidFingerprint:
             return "Invalid fingerprint"
-        case Unknown(let msg):
+        case unknown(let msg):
             return msg
-        case SSHError(_, let msg):
+        case sshError(_, let msg):
             return msg
         }
     }

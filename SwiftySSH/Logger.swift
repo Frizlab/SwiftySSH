@@ -10,13 +10,13 @@ import Foundation
 
 
 struct Logger {
-    func debug(msg: String) {
+    func debug(_ msg: String) {
         print("debug: \(msg)")
     }
-    func error(msg: String) {
+    func error(_ msg: String) {
         print("error: \(msg)")
     }
-    func info(msg: String) {
+    func info(_ msg: String) {
         print("info: \(msg)")
     }
 }

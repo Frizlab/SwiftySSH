@@ -13,56 +13,56 @@ import XCTest
 class SwiftySSHTests: XCTestCase {
 
     func testValidPassword() {
-        let expectation = expectationWithDescription("testValidPassword")
+        let expectation = self.expectation(withDescription: "testValidPassword")
         
-        let session = Session("vovasty", host:"127.0.0.1", port: 2222)
+        let session = Session("vagrant", host:"127.0.0.1", port: 2222)
         .onDisconnect { (session, error) -> Void in
             XCTAssert(error == nil, "\(error)")
         }
-        .authenticate(.Password(password: "3Dk@hmPC"))
+        .authenticate(.password(password: "vagrant"))
         .onConnect({ (session, error) -> Void in
             XCTAssert(error == nil, "\(error)")
             expectation.fulfill()
         })
         .connect()
         
-        waitForExpectationsWithTimeout(100, handler: nil)
+        waitForExpectations(withTimeout: 100, handler: nil)
 
         session.disconnect()
     }
 
     func testInvalidPassword() {
-        let expectation = expectationWithDescription("testInvalidPassword")
-        let session = Session("vovasty", host:"127.0.0.1", port: 2222)
+        let expectation = self.expectation(withDescription: "testInvalidPassword")
+        let session = Session("vagrant", host:"127.0.0.1", port: 2222)
             .onDisconnect { (session, error) -> Void in
                 XCTAssert(error == nil, "\(error)")
             }
-            .authenticate(.Password(password: "wrong password"))
+            .authenticate(.password(password: "wrong password"))
             .onConnect({ (session, error) -> Void in
                 XCTAssertFalse(error == nil, "\(error)")
                 expectation.fulfill()
             })
             .connect()
         
-        waitForExpectationsWithTimeout(1000, handler: nil)
+        waitForExpectations(withTimeout: 1000, handler: nil)
         
         session.disconnect()
     }
 
     func testPublicKey() {
-        let expectation = expectationWithDescription("testPublicKey")
-        let session = Session("vovasty", host:"solomav.no-ip.org", port: 9999)
+        let expectation = self.expectation(withDescription: "testPublicKey")
+        let session = Session("vovasty", host:"127.0.0.1", port: 2222)
             .onDisconnect { (session, error) -> Void in
                 XCTAssert(error == nil, "\(error)")
             }
-            .authenticate(.PublicKey(publicKeyPath: "/Users/i843418/.ssh/default.pub", privateKeyPath: "/Users/i843418/.ssh/default", passphrase: "V5o!0m3n"))
+            .authenticate(.publicKey(publicKeyPath: "/Users/i843418/.ssh/default.pub", privateKeyPath: "/Users/i843418/.ssh/default", passphrase: "V5o!0m3n"))
             .onConnect({ (session, error) -> Void in
                 XCTAssert(error == nil, "\(error)")
                 expectation.fulfill()
             })
             .connect()
         
-        waitForExpectationsWithTimeout(1000, handler: nil)
+        waitForExpectations(withTimeout: 1000, handler: nil)
         
         session.disconnect()
     }
@@ -70,22 +70,22 @@ class SwiftySSHTests: XCTestCase {
     
     
     func testConnectByURL() {
-        let expectation = expectationWithDescription("testConnectByURL")
+        let expectation = self.expectation(withDescription: "testConnectByURL")
         
-        let session = Session("ssh://vovasty@127.0.0.1:2222")
+        let session = Session("ssh://vagrant@127.0.0.1:2222")
         XCTAssertNotNil(session)
         
         session!.onDisconnect { (session, error) -> Void in
                 XCTAssert(error == nil, "\(error)")
         }
-        .authenticate(.Password(password: "3Dk@hmPC"))
+        .authenticate(.password(password: "vagrant"))
         .onConnect({ (session, error) -> Void in
             XCTAssert(error == nil, "\(error)")
             expectation.fulfill()
         })
         .connect()
         
-        waitForExpectationsWithTimeout(3, handler: nil)
+        waitForExpectations(withTimeout: 3, handler: nil)
         
         session!.disconnect()
     }

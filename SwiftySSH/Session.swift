@@ -9,50 +9,50 @@
 import Foundation
 
 public enum Fingerprint{
-    case MD5(fingerprint: String), SHA1(fingerprint: String)
+    case md5(fingerprint: String), sha1(fingerprint: String)
 }
 
 public enum Authentication{
-    case Password(password: String)
-    case PublicKey(publicKeyPath: String, privateKeyPath: String, passphrase: String)
+    case password(password: String)
+    case publicKey(publicKeyPath: String, privateKeyPath: String, passphrase: String)
 }
 
-typealias LIBSSH2_SESSION = COpaquePointer
+typealias LIBSSH2_SESSION = OpaquePointer
 
 private struct SSHInit {
     static let initialized = libssh2_init(0) == 0
 }
 
-private func userauthList(session: LIBSSH2_SESSION, user: String) ->[String]?
+private func userauthList(_ session: LIBSSH2_SESSION, user: String) ->[String]?
 {
     let ul = libssh2_userauth_list(session, user, UInt32(user.utf8.count))
     
-    if let ul = String.fromCString(ul) {
-        return ul.componentsSeparatedByString(",")
+    if let ul = String(validatingUTF8: ul!) {
+        return ul.components(separatedBy: ",")
     }
     
     return nil
 }
 
 public class Session {
-    internal var session: LIBSSH2_SESSION = nil
+    internal var session: LIBSSH2_SESSION? = nil
     public var timeout: Double = 1000
     private let host: String
     private let port: UInt16
     private let user: String
     private var expectedFingerprint: Fingerprint?
     private var authentication: Authentication?
-    var queue: dispatch_queue_t?
-    internal var socket: CFSocket?
-    private var connectChain = CommandChain<ErrorType?>()
-    private var disconnectChain = CommandChain<ErrorType?>()
-    private var keepAliveSource: dispatch_source_t!
-    private var keepaliveInterval:  UInt
+    var queue: DispatchQueue!
+    internal var socket: ClientSocketType?
+    private var connectChain = CommandChain<ErrorProtocol?>()
+    private var disconnectChain = CommandChain<ErrorProtocol?>()
+    private var keepAliveSource: DispatchSourceTimer!
+    private var keepaliveInterval:  Int
     private var errorCounter: UInt = 0
     private let maxErrorCounter: UInt
 
     
-    required public init(_ user: String, host: String, port: UInt16, keepaliveInterval: UInt = 10, maxErrorCounter: UInt = 6){
+    required public init(_ user: String, host: String, port: UInt16, keepaliveInterval: Int = 10, maxErrorCounter: UInt = 6){
         self.host = host
         self.port = port
         self.user = user
@@ -62,7 +62,7 @@ public class Session {
     
     private func setupKeepAlive() {
         if keepAliveSource != nil {
-            dispatch_source_cancel(keepAliveSource)
+            keepAliveSource.cancel()
             keepAliveSource = nil
         }
         
@@ -72,21 +72,20 @@ public class Session {
         
         libssh2_keepalive_config (self.session, 1, UInt32(keepaliveInterval))
         
-        keepAliveSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue)
+        keepAliveSource = DispatchSource.timer(queue: queue)
         
-        let interval = UInt64(keepaliveInterval) * NSEC_PER_SEC
-        dispatch_source_set_timer(keepAliveSource, dispatch_walltime(nil, 0), interval, 0);
+        keepAliveSource.scheduleRepeating(deadline: DispatchTime.now(), interval: DispatchTimeInterval.seconds(keepaliveInterval))
         
-        dispatch_source_set_event_handler(keepAliveSource, {
+        keepAliveSource.setEventHandler(handler: {
             var t = Int32(self.keepaliveInterval)
             let rc = libssh2_keepalive_send(self.session, &t)
             
             guard rc == 0 else {
                 logger.debug("keepalive error \(self.sshError())")
-                self.errorCounter++
+                self.errorCounter += 1
                 if self.errorCounter >= self.maxErrorCounter {
                     logger.debug("too many errors, closing session")
-                    let error = self.sshError() ?? SSHError.NotConnected
+                    let error = self.sshError() ?? SSHError.notConnected
                     self.disconnectWithError(error)
                 }
                 return
@@ -95,7 +94,7 @@ public class Session {
             self.errorCounter = 0
             
         })
-        dispatch_resume(keepAliveSource)
+        keepAliveSource.resume()
     }
     
     func sshError() -> SSHError? {
@@ -104,70 +103,76 @@ public class Session {
             return nil
         }
         
-        var message: UnsafeMutablePointer<Int8> = nil
+        var message: UnsafeMutablePointer<Int8>? = nil
         let code = libssh2_session_last_error(session, &message, nil, 0)
         
         if code == LIBSSH2_ERROR_NONE {
             return nil
         }
         
-        return SSHError.SSHError(code: code, msg: String.fromCString(message)!)
+        if let msg = message {
+            return SSHError.sshError(code: code, msg: String(cString: msg))
+        }
+        else {
+            return SSHError.sshError(code: code, msg: "Unknown error")
+        }
     }
     
-    public func authenticate(authentication: Authentication) -> Self {
+    @discardableResult
+    public func authenticate(_ authentication: Authentication) -> Self {
         self.authentication = authentication
         return self
     }
     
-    public func checkFingerprint(fingerprint: Fingerprint) -> Self{
+    @discardableResult
+    public func checkFingerprint(_ fingerprint: Fingerprint) -> Self{
         self.expectedFingerprint = fingerprint
         return self
     }
     
-    public func onDisconnect(handler: (Session, ErrorType?) -> Void) -> Self {
+    @discardableResult
+    public func onDisconnect(_ handler: (Session, ErrorProtocol?) -> Void) -> Self {
         disconnectChain.append{ (e) -> Void in
             handler(self, e)
         }
         return self
     }
     
-    public func onConnect(handler: (Session, ErrorType?) -> Void) -> Self {
+    @discardableResult
+    public func onConnect(_ handler: (Session, ErrorProtocol?) -> Void) -> Self {
         connectChain.append{ (e) -> Void in
             handler(self, e)
         }
         return self
     }
 
-
+    @discardableResult
     public func connect() -> Self {
         guard SSHInit.initialized else {
             connectChain.value = sshError()
             cleanup()
             return self
         }
-        queue = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
-        dispatch_async(queue!, {
-            var s = self.self
+        queue = DispatchQueue(label: "net.aramzamzam.nswiftyssh", attributes: DispatchQueueAttributes.serial)
+        queue!.async{
+            var s = self
             self.session = libssh2_session_init_ex(nil, nil, nil, &s)
             
-            guard let addresses = resolveHost(self.host) else {
-                self.connectChain.value = SSHError.Unknown(msg: "unknown host \(self.host)")
-                return
+            do {
+                self.socket = try BasicClientSocket(host: self.host, port: String(self.port))
+                self.socket?.socket[socketOption: SO_NOSIGPIPE] = 1
+                try self.socket?.connect()
             }
-            
-            guard let sock = createSocket(addresses, port: self.port, timeout: self.timeout) else {
-                self.connectChain.value = SSHError.Unknown(msg: "unable to connect to \(self.host):\(self.port)")
+            catch {
+                self.connectChain.value = SSHError.unknown(msg: "unable to connect to \(self.host):\(self.port)")
                 self.cleanup()
                 return
             }
 
             
-            self.socket = sock
-            
             // Start the session
-            
             do {
-                try callSSH(self, self.timeout, libssh2_session_handshake(self.session, CFSocketGetNative(self.socket)))
+                try callSSH(self, self.timeout, libssh2_session_handshake(self.session, self.socket!.socket.fileDescriptor))
             }
             catch let e {
                 self.connectChain.value = e
@@ -181,34 +186,34 @@ public class Session {
                 let checked: Bool
                 
                 switch expectedFingerprint {
-                case .MD5(let x):
+                case .md5(let x):
                     checked = actualFingerprint == x
-                case .SHA1(let x):
+                case .sha1(let x):
                     checked = actualFingerprint == x
                 }
                 
                 if !checked {
-                    self.connectChain.value = SSHError.InvalidFingerprint
+                    self.connectChain.value = SSHError.invalidFingerprint
                     self.cleanup()
                     return
                 }
             }
             
             guard let auth = self.authentication else {
-                self.connectChain.value = SSHError.Unknown(msg: "authentication is not defined")
+                self.connectChain.value = SSHError.unknown(msg: "authentication is not defined")
                 self.cleanup()
                 return
             }
             
             switch auth {
-            case .Password(let password):
+            case .password(let password):
                 if self.authenticateByPassword(password) {
                     self.connectChain.value = nil
                     self.setupKeepAlive()
                     return
                 }
                 
-            case .PublicKey(let publicKeyPath, let privateKeyPath, let passphrase):
+            case .publicKey(let publicKeyPath, let privateKeyPath, let passphrase):
                 if self.authenticateByPublicKey(publicKeyPath, privateKeyPath: privateKeyPath, passphrase: passphrase) {
                     self.connectChain.value = nil
                     self.setupKeepAlive()
@@ -217,15 +222,15 @@ public class Session {
 
             }
             
-            self.connectChain.value = self.sshError() ?? SSHError.Unknown(msg: "Unknown authentication error")
+            self.connectChain.value = self.sshError() ?? SSHError.unknown(msg: "Unknown authentication error")
             
             self.cleanup()
-        })
+        }
         
         return self
     }
 
-    private func disconnectWithError (error: ErrorType) {
+    private func disconnectWithError (_ error: ErrorProtocol) {
         logger.error("closing session with error: \(error)")
         disconnectChain.value = error
         cleanup()
@@ -240,10 +245,13 @@ public class Session {
         //queue pasing and releasing causes crash
         self.queue = nil
         
-        if socket != nil {
-            CFSocketInvalidate(socket)
-            socket = nil
+        do {
+            try socket?.socket.close()
         }
+        catch {
+            logger.error("unable to close socket \(error)")
+        }
+        socket = nil
         
         if session != nil {
             libssh2_session_disconnect_ex(session, SSH_DISCONNECT_BY_APPLICATION, "app quit", "")
@@ -252,23 +260,19 @@ public class Session {
         }
         
         if keepAliveSource != nil {
-            dispatch_source_cancel(keepAliveSource)
+            keepAliveSource.cancel()
             keepAliveSource = nil
-        }
-        
-        if keepAliveSource != nil {
-            dispatch_source_cancel(keepAliveSource)
         }
     }
     
-    public func fingerprint(hashType: Fingerprint)->String? {
+    public func fingerprint(_ hashType: Fingerprint)->String? {
         assert(session != nil, "no session")
         if self.session == nil {
             return nil;
         }
     
         switch hashType {
-        case .MD5:
+        case .md5:
             if let h = libssh2_hostkey_hash(session, LIBSSH2_HOSTKEY_HASH_MD5) as UnsafePointer<Int8>? {
                 return NSString (format: "%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
                     h[0], h[1], h[2], h[3],
@@ -277,7 +281,7 @@ public class Session {
                     h[12], h[13], h[14], h[15]) as String
             }
 
-        case .SHA1:
+        case .sha1:
             if let h = libssh2_hostkey_hash(session, LIBSSH2_HOSTKEY_HASH_SHA1) as UnsafePointer<Int8>? {
                 return NSString (format: "%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
                     h[0], h[1], h[2], h[3],
@@ -287,6 +291,8 @@ public class Session {
                     h[16], h[17], h[18], h[19]) as String
             }
         }
+        
+        return nil
     }
     
     public var supportedAuthenticationMethods: [String]? {
@@ -296,11 +302,11 @@ public class Session {
                 return nil;
             }
 
-            return userauthList(session, user: user)
+            return userauthList(session!, user: user)
         }
     }
     
-    private func authenticateByPassword(password: String)->Bool
+    private func authenticateByPassword(_ password: String)->Bool
     {
     
         if let supportedAuthenticationMethods = supportedAuthenticationMethods {
@@ -309,10 +315,10 @@ public class Session {
                 
                 do {
                     try callSSH(self, self.timeout, libssh2_userauth_password_ex(session,
-                        user.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                        UInt32(user.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
-                        password.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                        UInt32(password.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
+                        user.cString(using: String.Encoding.utf8)!,
+                        UInt32(user.lengthOfBytes(using: String.Encoding.utf8)),
+                        password.cString(using: String.Encoding.utf8)!,
+                        UInt32(password.lengthOfBytes(using: String.Encoding.utf8)),
                         nil))
                     return true
                 }
@@ -325,7 +331,7 @@ public class Session {
         return false
     }
     
-    private func authenticateByPublicKey(publicKeyPath: String, privateKeyPath: String, passphrase: String)->Bool
+    private func authenticateByPublicKey(_ publicKeyPath: String, privateKeyPath: String, passphrase: String)->Bool
     {
         logger.debug("authenticating with authenticateByPublicKey, supportedAuthenticationMethods: \(supportedAuthenticationMethods)")
         if let supportedAuthenticationMethods = supportedAuthenticationMethods {
@@ -333,10 +339,10 @@ public class Session {
             {
                 do {
                     try callSSH(self, self.timeout, libssh2_userauth_publickey_fromfile_ex(session,
-                        user.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                        UInt32(user.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)),
-                        publicKeyPath.cStringUsingEncoding(NSUTF8StringEncoding)!,
-                        privateKeyPath.cStringUsingEncoding(NSUTF8StringEncoding)!,
+                        user.cString(using: String.Encoding.utf8)!,
+                        UInt32(user.lengthOfBytes(using: String.Encoding.utf8)),
+                        publicKeyPath.cString(using: String.Encoding.utf8)!,
+                        privateKeyPath.cString(using: String.Encoding.utf8)!,
                         passphrase))
                     
                     return true
@@ -357,10 +363,10 @@ public class Session {
 
 public extension Session {
     convenience public init?(_ url: String){
-        guard let parsed = NSURL(string: url), let user = parsed.user, let host = parsed.host else {
+        guard let parsed = URL(string: url), let user = parsed.user, let host = parsed.host else {
             return nil
         }
         
-        self.init(user, host: host, port: parsed.port == nil ? 22 : UInt16(parsed.port!.integerValue))
+        self.init(user, host: host, port: (parsed as NSURL).port == nil ? 22 : UInt16((parsed as NSURL).port!.intValue))
     }
 }

@@ -12,21 +12,27 @@
 		CD156B901B87E7C200CDD8F3 /* DirectTCPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD156B8F1B87E7C200CDD8F3 /* DirectTCPTests.swift */; };
 		CD156B921B87EAAF00CDD8F3 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD156B911B87EAAF00CDD8F3 /* Manager.swift */; };
 		CD24F8821B868C75008DFB41 /* helpers.c in Sources */ = {isa = PBXBuildFile; fileRef = CD24F8801B868C75008DFB41 /* helpers.c */; };
-		CD470A2C1B868FA300D5ACE4 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2B1B868FA300D5ACE4 /* libssh2.a */; };
 		CD470A2E1B868FBF00D5ACE4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2D1B868FBF00D5ACE4 /* libz.tbd */; };
-		CD470A301B868FCB00D5ACE4 /* libcrypto.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2F1B868FCB00D5ACE4 /* libcrypto.tbd */; };
 		CD470A321B86911600D5ACE4 /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = CD470A311B86911600D5ACE4 /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD470A701B8697A100D5ACE4 /* SwiftySSH.h in Headers */ = {isa = PBXBuildFile; fileRef = CD470A6F1B8697A100D5ACE4 /* SwiftySSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD470A781B8697D900D5ACE4 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A711B8697D900D5ACE4 /* Channel.swift */; };
 		CD470A791B8697D900D5ACE4 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A721B8697D900D5ACE4 /* Error.swift */; };
 		CD470A7A1B8697D900D5ACE4 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A731B8697D900D5ACE4 /* Logger.swift */; };
 		CD470A7D1B8697D900D5ACE4 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A761B8697D900D5ACE4 /* Session.swift */; };
-		CD470A7E1B8697D900D5ACE4 /* SocketUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A771B8697D900D5ACE4 /* SocketUtils.swift */; };
 		CD470A801B8698B400D5ACE4 /* helpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CD470A7F1B8698A000D5ACE4 /* helpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CD470A851B86994C00D5ACE4 /* SocketUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A821B86994C00D5ACE4 /* SocketUtilsTests.swift */; };
 		CD470A861B86994C00D5ACE4 /* SessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD470A831B86994C00D5ACE4 /* SessionTests.swift */; };
 		CD849CCC19F99A670074F98B /* SwiftySSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD849CC019F99A670074F98B /* SwiftySSH.framework */; };
-		CDAA1C6A1BB78ABC009AE9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAA1C691BB78ABC009AE9BD /* Utils.swift */; settings = {ASSET_TAGS = (); }; };
+		CDAA1C6A1BB78ABC009AE9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAA1C691BB78ABC009AE9BD /* Utils.swift */; };
+		CDC5D0971D36B85F00963281 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC5D0951D36B85F00963281 /* libssl.a */; };
+		CDC5D0981D36B85F00963281 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC5D0961D36B85F00963281 /* libcrypto.a */; };
+		CDC5D0991D36B88F00963281 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2B1B868FA300D5ACE4 /* libssh2.a */; };
+		CDDA5BA01D344A89007AAE90 /* SocketAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5B9C1D344A89007AAE90 /* SocketAddress.swift */; };
+		CDDA5BA11D344A89007AAE90 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5B9D1D344A89007AAE90 /* Socket.swift */; };
+		CDDA5BA21D344A89007AAE90 /* AddressSocketType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5B9E1D344A89007AAE90 /* AddressSocketType.swift */; };
+		CDDA5BA31D344A89007AAE90 /* AddressInfoSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5B9F1D344A89007AAE90 /* AddressInfoSequence.swift */; };
+		CDDA5BA71D344AB2007AAE90 /* SocketType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5BA61D344AB2007AAE90 /* SocketType.swift */; };
+		CDDA5BA91D344BDD007AAE90 /* ClientSocketType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5BA81D344BDD007AAE90 /* ClientSocketType.swift */; };
+		CDDA5BAB1D344D28007AAE90 /* ClientSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5BAA1D344D28007AAE90 /* ClientSocket.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,22 +66,30 @@
 		CD24F8801B868C75008DFB41 /* helpers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = helpers.c; sourceTree = "<group>"; };
 		CD470A2B1B868FA300D5ACE4 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = lib/lib/libssh2.a; sourceTree = "<group>"; };
 		CD470A2D1B868FBF00D5ACE4 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		CD470A2F1B868FCB00D5ACE4 /* libcrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcrypto.tbd; path = usr/lib/libcrypto.tbd; sourceTree = SDKROOT; };
 		CD470A311B86911600D5ACE4 /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libssh2.h; path = lib/include/libssh2/libssh2.h; sourceTree = "<group>"; };
 		CD470A6F1B8697A100D5ACE4 /* SwiftySSH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftySSH.h; sourceTree = "<group>"; };
 		CD470A711B8697D900D5ACE4 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		CD470A721B8697D900D5ACE4 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		CD470A731B8697D900D5ACE4 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		CD470A761B8697D900D5ACE4 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
-		CD470A771B8697D900D5ACE4 /* SocketUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketUtils.swift; sourceTree = "<group>"; };
 		CD470A7F1B8698A000D5ACE4 /* helpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = helpers.h; sourceTree = "<group>"; };
-		CD470A821B86994C00D5ACE4 /* SocketUtilsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketUtilsTests.swift; sourceTree = "<group>"; };
 		CD470A831B86994C00D5ACE4 /* SessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionTests.swift; sourceTree = "<group>"; };
 		CD849CC019F99A670074F98B /* SwiftySSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftySSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD849CC419F99A670074F98B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD849CCB19F99A670074F98B /* SwiftySSHTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftySSHTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD849CD119F99A670074F98B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDAA1C691BB78ABC009AE9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		CDC5D0951D36B85F00963281 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = lib/lib/libssl.a; sourceTree = "<group>"; };
+		CDC5D0961D36B85F00963281 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = lib/lib/libcrypto.a; sourceTree = "<group>"; };
+		CDDA5B9C1D344A89007AAE90 /* SocketAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAddress.swift; sourceTree = "<group>"; };
+		CDDA5B9D1D344A89007AAE90 /* Socket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Socket.swift; sourceTree = "<group>"; };
+		CDDA5B9E1D344A89007AAE90 /* AddressSocketType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressSocketType.swift; sourceTree = "<group>"; };
+		CDDA5B9F1D344A89007AAE90 /* AddressInfoSequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressInfoSequence.swift; sourceTree = "<group>"; };
+		CDDA5BA61D344AB2007AAE90 /* SocketType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketType.swift; sourceTree = "<group>"; };
+		CDDA5BA81D344BDD007AAE90 /* ClientSocketType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientSocketType.swift; sourceTree = "<group>"; };
+		CDDA5BAA1D344D28007AAE90 /* ClientSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientSocket.swift; sourceTree = "<group>"; };
+		CDDA5BAD1D345121007AAE90 /* libcommonCrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcommonCrypto.tbd; path = usr/lib/system/libcommonCrypto.tbd; sourceTree = SDKROOT; };
+		CDDA5BAF1D345167007AAE90 /* libcrypto.35.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcrypto.35.tbd; path = usr/lib/libcrypto.35.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,9 +97,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD470A301B868FCB00D5ACE4 /* libcrypto.tbd in Frameworks */,
+				CDC5D0991D36B88F00963281 /* libssh2.a in Frameworks */,
+				CDC5D0971D36B85F00963281 /* libssl.a in Frameworks */,
 				CD470A2E1B868FBF00D5ACE4 /* libz.tbd in Frameworks */,
-				CD470A2C1B868FA300D5ACE4 /* libssh2.a in Frameworks */,
+				CDC5D0981D36B85F00963281 /* libcrypto.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,9 +118,10 @@
 		CD470A8B1B869E4400D5ACE4 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				CD470A2F1B868FCB00D5ACE4 /* libcrypto.tbd */,
 				CD470A2D1B868FBF00D5ACE4 /* libz.tbd */,
 				CD470A2B1B868FA300D5ACE4 /* libssh2.a */,
+				CDC5D0951D36B85F00963281 /* libssl.a */,
+				CDC5D0961D36B85F00963281 /* libcrypto.a */,
 				CD470A311B86911600D5ACE4 /* libssh2.h */,
 			);
 			name = lib;
@@ -118,6 +134,7 @@
 				CD849CC219F99A670074F98B /* SwiftySSH */,
 				CD849CCF19F99A670074F98B /* SwiftySSHTests */,
 				CD849CC119F99A670074F98B /* Products */,
+				CDDA5BAC1D345121007AAE90 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -140,10 +157,10 @@
 				CD470A761B8697D900D5ACE4 /* Session.swift */,
 				CD156B911B87EAAF00CDD8F3 /* Manager.swift */,
 				CD156B891B87C0DF00CDD8F3 /* CommandChain.swift */,
-				CD470A771B8697D900D5ACE4 /* SocketUtils.swift */,
 				CD470A6F1B8697A100D5ACE4 /* SwiftySSH.h */,
 				CD24F8801B868C75008DFB41 /* helpers.c */,
 				CD470A7F1B8698A000D5ACE4 /* helpers.h */,
+				CDDA5BA51D344A9A007AAE90 /* Socket */,
 				CD849CC319F99A670074F98B /* Supporting Files */,
 			);
 			path = SwiftySSH;
@@ -160,7 +177,6 @@
 		CD849CCF19F99A670074F98B /* SwiftySSHTests */ = {
 			isa = PBXGroup;
 			children = (
-				CD470A821B86994C00D5ACE4 /* SocketUtilsTests.swift */,
 				CD470A831B86994C00D5ACE4 /* SessionTests.swift */,
 				CD156B8F1B87E7C200CDD8F3 /* DirectTCPTests.swift */,
 				CD156B8B1B87C8CA00CDD8F3 /* CommandChainTests.swift */,
@@ -175,6 +191,29 @@
 				CD849CD119F99A670074F98B /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CDDA5BA51D344A9A007AAE90 /* Socket */ = {
+			isa = PBXGroup;
+			children = (
+				CDDA5BA61D344AB2007AAE90 /* SocketType.swift */,
+				CDDA5BA81D344BDD007AAE90 /* ClientSocketType.swift */,
+				CDDA5B9C1D344A89007AAE90 /* SocketAddress.swift */,
+				CDDA5B9D1D344A89007AAE90 /* Socket.swift */,
+				CDDA5B9E1D344A89007AAE90 /* AddressSocketType.swift */,
+				CDDA5B9F1D344A89007AAE90 /* AddressInfoSequence.swift */,
+				CDDA5BAA1D344D28007AAE90 /* ClientSocket.swift */,
+			);
+			name = Socket;
+			sourceTree = "<group>";
+		};
+		CDDA5BAC1D345121007AAE90 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CDDA5BAF1D345167007AAE90 /* libcrypto.35.tbd */,
+				CDDA5BAD1D345121007AAE90 /* libcommonCrypto.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -238,14 +277,16 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Vladimir Solomenchuk";
 				TargetAttributes = {
 					CD849CBF19F99A670074F98B = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0800;
 					};
 					CD849CCA19F99A670074F98B = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -290,10 +331,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD470A7A1B8697D900D5ACE4 /* Logger.swift in Sources */,
-				CD470A7E1B8697D900D5ACE4 /* SocketUtils.swift in Sources */,
+				CDDA5BA31D344A89007AAE90 /* AddressInfoSequence.swift in Sources */,
 				CDAA1C6A1BB78ABC009AE9BD /* Utils.swift in Sources */,
+				CDDA5BA71D344AB2007AAE90 /* SocketType.swift in Sources */,
+				CDDA5BAB1D344D28007AAE90 /* ClientSocket.swift in Sources */,
+				CDDA5BA01D344A89007AAE90 /* SocketAddress.swift in Sources */,
+				CDDA5BA91D344BDD007AAE90 /* ClientSocketType.swift in Sources */,
 				CD156B8A1B87C0DF00CDD8F3 /* CommandChain.swift in Sources */,
 				CD156B921B87EAAF00CDD8F3 /* Manager.swift in Sources */,
+				CDDA5BA11D344A89007AAE90 /* Socket.swift in Sources */,
+				CDDA5BA21D344A89007AAE90 /* AddressSocketType.swift in Sources */,
 				CD470A791B8697D900D5ACE4 /* Error.swift in Sources */,
 				CD470A7D1B8697D900D5ACE4 /* Session.swift in Sources */,
 				CD24F8821B868C75008DFB41 /* helpers.c in Sources */,
@@ -306,7 +353,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD156B901B87E7C200CDD8F3 /* DirectTCPTests.swift in Sources */,
-				CD470A851B86994C00D5ACE4 /* SocketUtilsTests.swift in Sources */,
 				CD156B8C1B87C8CA00CDD8F3 /* CommandChainTests.swift in Sources */,
 				CD470A861B86994C00D5ACE4 /* SessionTests.swift in Sources */,
 			);
@@ -346,6 +392,7 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -392,6 +439,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -423,11 +471,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib/lib",
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -447,10 +497,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib/lib",
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -473,6 +526,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -490,6 +544,8 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.aramzamzam.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

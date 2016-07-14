@@ -11,12 +11,15 @@ import XCTest
 
 class DirectTCPTests: XCTestCase {
     
+    //ncat -lkv --chat 127.0.0.1 12345
     func testForwarding() {
-        let expectation = expectationWithDescription("testForwarding")
+        let expectation = self.expectation(withDescription: "testForwarding")
         
-        let manager = Manager("vovasty", host:"127.0.0.1", port: 2222)
+        let testString = "test 😀"
+        
+        let manager = Manager("vagrant", host:"127.0.0.1", port: 2222)
             .session{(session) in
-                session.authenticate(.Password(password: "3Dk@hmPC"))
+                session.authenticate(.password(password: "vagrant"))
         }
         .connect()
             
@@ -32,20 +35,20 @@ class DirectTCPTests: XCTestCase {
             XCTAssertFalse(data == nil)
             
             if let data = data {
-                let s = NSString(bytes: data, length: data.count, encoding: NSUTF8StringEncoding)!
+                let s = NSString(bytes: data, length: data.count, encoding: String.Encoding.utf8.rawValue)
                 print(s)
+                expectation.fulfill()
             }
         }
         .onOpen{ (channel, error) -> Void in
             XCTAssert(error == nil)
-            channel.write("test 😀", handler: { (error) -> Void in
+            channel.write(testString, handler: { (error) -> Void in
                 XCTAssert(error == nil)
-                expectation.fulfill()
             })
         }
         .open()
         
         
-        waitForExpectationsWithTimeout(3, handler: nil)
+        waitForExpectations(withTimeout: 3, handler: nil)
     }    
 }

@@ -20,12 +20,12 @@ public class Manager {
         return self
     }
     
-    public func session(closure: (Session)->Void) -> Self {
+    public func session(_ closure: (Session)->Void) -> Self {
         closure(_session)
         return self
     }
     
-    public func directTCP(remoteHost: String, remotePort: UInt16) -> Channel {
+    public func directTCP(_ remoteHost: String, remotePort: UInt16) -> Channel {
         return Channel(_session, remoteHost: remoteHost, remotePort: remotePort)
     }
 

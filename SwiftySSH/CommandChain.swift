@@ -19,15 +19,15 @@ class CommandChain<T> {
     init () {
     }
     
-    func append(command: (T) -> Void) {
+    func append(_ command: (T) -> Void) {
         if valueSet {
             command(value)
         }
         
-        commands.append((id: NSUUID().UUIDString, command: command))
+        commands.append((id: UUID().uuidString, command: command))
     }
     
-    func remove(id: String) {
+    func remove(_ id: String) {
         commands = commands.filter({ (tuple) -> Bool in
             return tuple.id == id
         })
@@ -51,7 +51,7 @@ class CommandChain<T> {
         }
     }
     
-    private func execAll(arg: T) {
+    private func execAll(_ arg: T) {
         for tuple in commands {
             tuple.command(arg)
         }
