@@ -10,6 +10,8 @@
 #import <arpa/inet.h>
 #import <sys/select.h>
 
+
+//FIXME: rewrite in swoft? http://swiftrien.blogspot.com/2015/11/swift-code-library-replacements-for.html
 int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     struct timeval timeout;
     
