@@ -12,13 +12,16 @@ public enum SSHError: ErrorProtocol, CustomStringConvertible {
     case notConnected
     case timeout
     case invalidFingerprint
+    case authenticationFailed
     case unknown(msg: String)
     case sshError(code: Int32, msg: String)
     
     public var description: String {
         switch self {
+        case authenticationFailed:
+            return "authentication failed"
         case notConnected:
-                return "Not connected"
+            return "Not connected"
         case timeout:
             return "connection timeout"
         case invalidFingerprint:

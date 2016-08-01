@@ -13,80 +13,77 @@ import XCTest
 class SwiftySSHTests: XCTestCase {
 
     func testValidPassword() {
-        let expectation = self.expectation(withDescription: "testValidPassword")
+        let expectation = self.expectation(description: "password")
         
-        let session = Session("vagrant", host:"127.0.0.1", port: 2222)
-        .onDisconnect { (session, error) -> Void in
-            XCTAssert(error == nil, "\(error)")
-        }
-        .authenticate(.password(password: "vagrant"))
-        .onConnect({ (session, error) -> Void in
-            XCTAssert(error == nil, "\(error)")
-            expectation.fulfill()
-        })
-        .connect()
-        
-        waitForExpectations(withTimeout: 100, handler: nil)
-
-        session.disconnect()
-    }
-
-    func testInvalidPassword() {
-        let expectation = self.expectation(withDescription: "testInvalidPassword")
-        let session = Session("vagrant", host:"127.0.0.1", port: 2222)
-            .onDisconnect { (session, error) -> Void in
-                XCTAssert(error == nil, "\(error)")
+        class Delegate: SessionDelegate {
+            let expectation: XCTestExpectation
+            
+            init(_ expectation: XCTestExpectation) {
+                self.expectation = expectation
             }
-            .authenticate(.password(password: "wrong password"))
-            .onConnect({ (session, error) -> Void in
-                XCTAssertFalse(error == nil, "\(error)")
-                expectation.fulfill()
-            })
-            .connect()
-        
-        waitForExpectations(withTimeout: 1000, handler: nil)
-        
-        session.disconnect()
-    }
-
-    func testPublicKey() {
-        let expectation = self.expectation(withDescription: "testPublicKey")
-        let session = Session("vovasty", host:"127.0.0.1", port: 2222)
-            .onDisconnect { (session, error) -> Void in
-                XCTAssert(error == nil, "\(error)")
+            
+            func sshSession(session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler) {
+                handler(allow: true)
             }
-            .authenticate(.publicKey(publicKeyPath: "/Users/i843418/.ssh/default.pub", privateKeyPath: "/Users/i843418/.ssh/default", passphrase: "V5o!0m3n"))
-            .onConnect({ (session, error) -> Void in
-                XCTAssert(error == nil, "\(error)")
+            
+            func sshSession(session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler) {
+                handler(authenticate: .password("vagrant"))
+            }
+            
+            func sshSessionConnected(session: Session) {
                 expectation.fulfill()
-            })
-            .connect()
+            }
+            
+            func sshSessionDisconnected(session: Session, error: ErrorProtocol?) {
+                XCTAssertNil(error)
+            }
+        }
         
-        waitForExpectations(withTimeout: 1000, handler: nil)
+        let delegate = Delegate(expectation)
         
+        let session = Session(user: "vagrant", host:"127.0.0.1", port: 2222, keepaliveInterval: 10, maxErrorCounter: 3)
+        session.delegate = delegate
+        session.connect()
+        
+        waitForExpectations(timeout: 3, handler: nil)
+
         session.disconnect()
     }
-
     
-    
-    func testConnectByURL() {
-        let expectation = self.expectation(withDescription: "testConnectByURL")
+    func testInValidPassword() {
+        let expectation = self.expectation(description: "password")
         
-        let session = Session("ssh://vagrant@127.0.0.1:2222")
-        XCTAssertNotNil(session)
-        
-        session!.onDisconnect { (session, error) -> Void in
-                XCTAssert(error == nil, "\(error)")
+        class Delegate: SessionDelegate {
+            let expectation: XCTestExpectation
+            
+            init(_ expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
+            
+            func sshSession(session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler) {
+                handler(allow: true)
+            }
+            
+            func sshSession(session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler) {
+                handler(authenticate: .password("vagrant1"))
+            }
+            
+            func sshSessionConnected(session: Session) {
+                
+            }
+            
+            func sshSessionDisconnected(session: Session, error: ErrorProtocol?) {
+                XCTAssertNotNil(error)
+                expectation.fulfill()
+            }
         }
-        .authenticate(.password(password: "vagrant"))
-        .onConnect({ (session, error) -> Void in
-            XCTAssert(error == nil, "\(error)")
-            expectation.fulfill()
-        })
-        .connect()
         
-        waitForExpectations(withTimeout: 3, handler: nil)
+        let delegate = Delegate(expectation)
         
-        session!.disconnect()
+        let session = Session(user: "vagrant", host:"127.0.0.1", port: 2222, keepaliveInterval: 10, maxErrorCounter: 3)
+        session.delegate = delegate
+        session.connect()
+        
+        waitForExpectations(timeout: 3, handler: nil)
     }
 }
