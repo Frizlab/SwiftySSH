@@ -135,7 +135,7 @@ enum SocketAddress {
 
     #if false // Doesn't work yet.
     var displayName: String {
-        func createDisplayName(address:UnsafePointer<Void> , family: Int32, maxLength: Int32) -> String {
+        func createDisplayName(address:UnsafePointer<Void>, family: Int32, maxLength: Int32) -> String {
             let pointer = UnsafeMutablePointer<CChar>.alloc(Int(maxLength))
             guard inet_ntop(family, address, pointer, socklen_t(maxLength)) != nil else {
                 fatalError("Error converting IP address to displayName")

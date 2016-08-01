@@ -9,9 +9,9 @@
 import Foundation
 
 public class Manager {
-    let session: ManagedSession
+    public let session: ManagedSession
 
-    init(user: String, host: String, port: UInt16, keepaliveInterval: Int = 10, maxErrorCounter: UInt = 3) {
+    public init(user: String, host: String, port: UInt16, keepaliveInterval: Int = 10, maxErrorCounter: UInt = 3) {
         session = ManagedSession(user: user, host: host, port: port, keepaliveInterval: keepaliveInterval, maxErrorCounter: maxErrorCounter)
     }
     
