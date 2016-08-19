@@ -41,7 +41,7 @@ extension Socket {
 
     /// Most of these errors are thrown whenever a low level socket function returns `-1`.
     /// Their associated error code then provides detailed information on the error.
-    enum Error: ErrorProtocol, CustomStringConvertible {
+    enum Error: Swift.Error, CustomStringConvertible {
         case bindFailed(code: errno_t)
         case closeFailed(code: errno_t)
         case connectFailed(code: errno_t)
@@ -196,7 +196,7 @@ extension Socket {
     /// Binds the given address to the server socket.
     ///
     /// - SeeAlso: `bind(2)`
-    func bind(address: UnsafePointer<sockaddr>, length: socklen_t) throws {
+    func bind(_ address: UnsafePointer<sockaddr>, length: socklen_t) throws {
         guard Darwin.bind(fileDescriptor, address, length) != -1 else {
             throw Error.bindFailed(code: errno)
         }
@@ -205,7 +205,7 @@ extension Socket {
     /// Starts listening for client connections on the server socket with type `SOCK_STREAM` (i.e. TCP).
     ///
     /// - SeeAlso: `listen(2)`
-    func listen(backlog: Int32) throws {
+    func listen(_ backlog: Int32) throws {
         guard Darwin.listen(fileDescriptor, backlog) != -1 else {
             throw Error.listenFailed(code: errno)
         }
@@ -216,24 +216,24 @@ extension Socket {
     ///  - `blocking` is `false`: throws `Socket.Error.NoDataAvailable`.
     ///
     /// - SeeAlso: `accept(2)`
-    func accept(blocking: Bool = false) throws -> (Socket, SocketAddress) {
-        self[fileOption: O_NONBLOCK] = !blocking
-
-        var clientFileDescriptor: Int32 = 0
-        let socketAddress = try SocketAddress() { sockaddr, length in
-            clientFileDescriptor = Darwin.accept(fileDescriptor, sockaddr, length)
-            guard clientFileDescriptor != -1 else {
-                switch errno {
-                case EAGAIN:
-                    throw Error.noDataAvailable
-
-                case let error:
-                    throw Error.acceptFailed(code: error)
-                }
-            }
-        }
-        return (Socket(fileDescriptor: clientFileDescriptor), socketAddress)
-    }
+//    func accept(_ blocking: Bool = false) throws -> (Socket, SocketAddress) {
+//        self[fileOption: O_NONBLOCK] = !blocking
+//
+//        var clientFileDescriptor: Int32 = 0
+//        let socketAddress = try SocketAddress() { sockaddr, length in
+//            clientFileDescriptor = Darwin.accept(self.fileDescriptor, sockaddr, length)
+//            guard clientFileDescriptor != -1 else {
+//                switch errno {
+//                case EAGAIN:
+//                    throw Error.noDataAvailable
+//
+//                case let error:
+//                    throw Error.acceptFailed(code: error)
+//                }
+//            }
+//        }
+//        return (Socket(fileDescriptor: clientFileDescriptor), socketAddress)
+//    }
 
 }
 
@@ -244,7 +244,7 @@ extension Socket {
     /// Connects the socket to a peer.
     ///
     /// - SeeAlso: `connect(2)`
-    func connect(address: UnsafePointer<sockaddr>, length: socklen_t) throws {
+    func connect(_ address: UnsafePointer<sockaddr>, length: socklen_t) throws {
         guard Darwin.connect(fileDescriptor, address, length) == 0 else {
             throw Error.connectFailed(code: errno)
         }
@@ -264,7 +264,7 @@ extension Socket {
 
         get {
             var value: Int32 = 0
-            var valueLength = socklen_t(sizeofValue(value))
+            var valueLength = socklen_t(MemoryLayout<Int32>.size)
 
             guard getsockopt(fileDescriptor, SOL_SOCKET, option, &value, &valueLength) != -1 else {
                 let errorNumber = errno
@@ -278,7 +278,7 @@ extension Socket {
         nonmutating set {
             var value = newValue
 
-            guard setsockopt(fileDescriptor, SOL_SOCKET, option, &value, socklen_t(sizeofValue(value))) != -1 else {
+            guard setsockopt(fileDescriptor, SOL_SOCKET, option, &value, socklen_t(MemoryLayout<Int32>.size)) != -1 else {
                 let errorNumber = errno
                 print("setsockopt() failed for option \(option), value \(value). \(errorNumber) \(strerror(errorNumber))")
                 return

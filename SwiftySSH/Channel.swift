@@ -9,17 +9,17 @@
 import Foundation
 
 public protocol ChannelDelegate: class {
-    func sshChannelOpened(channel: Channel)
-    func sshChannelClosed(channel: Channel, error: ErrorProtocol?)
-    func sshChannel(channel: Channel, received data: Array<UInt8>)
+    func sshChannelOpened(_ channel: Channel)
+    func sshChannelClosed(_ channel: Channel, error: Error?)
+    func sshChannel(_ channel: Channel, received data: Array<UInt8>)
 }
 
-public class Channel {
-    private let host: String
-    private let port: UInt16
-    public var channel: OpaquePointer!
-    public let session: Session
-    private var readSource: DispatchSourceRead!
+open class Channel {
+    fileprivate let host: String
+    fileprivate let port: UInt16
+    open var channel: OpaquePointer!
+    open let session: Session
+    fileprivate var readSource: DispatchSourceRead!
     var bufferSize = 65536
     var timeout = 60.0
     var streamId: Int32 = 0
@@ -31,7 +31,7 @@ public class Channel {
         self.session = session
     }
     
-    public func open() {
+    open func open() {
             session.queue.addOperation { [weak self] () -> Void in
                 guard let myself = self else { return }
                 
@@ -50,36 +50,37 @@ public class Channel {
                 }
                 catch {
                     logger.error("unable to create channel \(error)")
-                    myself.delegate?.sshChannelClosed(channel: myself, error: error)
+                    myself.delegate?.sshChannelClosed(myself, error: error)
                     return
                 }
 
-                myself.delegate?.sshChannelOpened(channel: myself)
+                myself.delegate?.sshChannelOpened(myself)
                 myself.openReadChannel()
         }
     }
     
     func openReadChannel() {
-        let queue = DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosBackground)
-        self.readSource = DispatchSource.read(fileDescriptor: self.session.socket!.socket.fileDescriptor, queue: queue)
+        let queue = DispatchQueue.global(qos: .background)
+        self.readSource = DispatchSource.makeReadSource(fileDescriptor: self.session.socket!.socket.fileDescriptor, queue: queue)
         
         self.readSource.setEventHandler { [weak self] () -> Void in
             guard let myself = self else { return }
             
             //                    logger.debug("data received")
             let bufferSize = myself.bufferSize
-            let buffer = UnsafeMutablePointer<UInt8>(allocatingCapacity: bufferSize)
-            defer {buffer.deallocateCapacity(bufferSize)}
+            let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: bufferSize)
+            defer {buffer.deallocate(capacity: bufferSize)}
             let time = CFAbsoluteTimeGetCurrent() + myself.timeout
             
+            
             while myself.channel != nil {
-                let rc = libssh2_channel_read_ex(myself.channel, myself.streamId, UnsafeMutablePointer<Int8>(buffer), bufferSize)
+                let rc = libssh2_channel_read_ex(myself.channel, myself.streamId, buffer, bufferSize)
                 
                 if rc == ssize_t(LIBSSH2_ERROR_EAGAIN) {
                     if (myself.timeout > 0 && time < CFAbsoluteTimeGetCurrent()) {
                         let error = SSHError.timeout
                         logger.error("Error while reading: \(error)")
-                        myself.delegate?.sshChannelClosed(channel: myself, error: error)
+                        myself.delegate?.sshChannelClosed(myself, error: error)
                         myself.cleanup()
                         return
                     }
@@ -92,15 +93,18 @@ public class Channel {
                     if (rc == ssize_t(LIBSSH2_ERROR_SOCKET_RECV)) {
                         let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_read_ex \(rc)")
                         logger.error("Error while reading: \(error)")
-                        myself.delegate?.sshChannelClosed(channel: myself, error: error)
+                        myself.delegate?.sshChannelClosed(myself, error: error)
                         myself.cleanup()
                     }
                     return
                 }
                 
-                //                        logger.debug("got \(rc) bytes")
-                let data = Array(UnsafeBufferPointer(start: buffer, count: rc))
-                myself.delegate?.sshChannel(channel: myself, received: data)
+                //logger.debug("got \(rc) bytes")
+                
+                
+                let bufferPointer = UnsafePointer(buffer).withMemoryRebound(to: UInt8.self, capacity: rc) { $0 }
+                let data = Array(UnsafeBufferPointer(start: bufferPointer, count: rc))
+                myself.delegate?.sshChannel(myself, received: data)
                 
                 let eof = libssh2_channel_eof(myself.channel)
                 
@@ -112,7 +116,7 @@ public class Channel {
                 else if eof < 0 {
                     let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_eof \(rc)")
                     logger.error("Error while reading: \(error)")
-                    myself.delegate?.sshChannelClosed(channel: myself, error: error)
+                    myself.delegate?.sshChannelClosed(myself, error: error)
                     myself.cleanup()
                     return
                 }
@@ -122,7 +126,7 @@ public class Channel {
         self.readSource.resume()
     }
 
-    private func cleanup() {
+    fileprivate func cleanup() {
         if self.channel != nil {
             logger.debug("channel cleanup")
             libssh2_channel_close(self.channel)
@@ -134,13 +138,13 @@ public class Channel {
         }
     }
     
-    public func close() {
+    open func close() {
         logger.debug("channel closed")
         cleanup()
-        delegate?.sshChannelClosed(channel: self, error: nil)
+        delegate?.sshChannelClosed(self, error: nil)
     }
     
-    public func write(_ buffer: [UInt8], handler:(ErrorProtocol?) -> Void) {
+    open func write(_ buffer: [UInt8], handler:@escaping (Error?) -> Void) {
         guard self.channel != nil else {
             handler(SSHError.notConnected)
             return
@@ -153,8 +157,9 @@ public class Channel {
             let len = buffer.count
             let time = CFAbsoluteTimeGetCurrent() + self.timeout
             
+            let bufferPointer = UnsafePointer(buffer).withMemoryRebound(to: Int8.self, capacity: buffer.count) { $0 }
             while wr < len  {
-                rc = libssh2_channel_write_ex(self.channel, self.streamId, UnsafePointer(buffer) + wr, len - wr)
+                rc = libssh2_channel_write_ex(self.channel, self.streamId, bufferPointer + wr, len - wr)
                 
                 if LIBSSH2_ERROR_EAGAIN == Int32(rc) {
                     if (self.timeout > 0 && time < CFAbsoluteTimeGetCurrent()) {
@@ -188,7 +193,7 @@ public class Channel {
 }
 
 public extension Session {
-    public func channel(host: String, port: UInt16) -> Channel {
+    public func channel(_ host: String, port: UInt16) -> Channel {
         return Channel(session: self, host: host, port: port)
     }
 }

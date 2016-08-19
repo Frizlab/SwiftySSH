@@ -22,19 +22,19 @@ class SwiftySSHTests: XCTestCase {
                 self.expectation = expectation
             }
             
-            func sshSession(session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler) {
-                handler(allow: true)
+            func sshSession(_ session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler) {
+                handler(true)
             }
             
-            func sshSession(session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler) {
-                handler(authenticate: .password("vagrant"))
+            func sshSession(_ session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler) {
+                handler(.password("vagrant"))
             }
             
-            func sshSessionConnected(session: Session) {
+            func sshSessionConnected(_ session: Session) {
                 expectation.fulfill()
             }
             
-            func sshSessionDisconnected(session: Session, error: ErrorProtocol?) {
+            func sshSessionDisconnected(_ session: Session, error: Error?) {
                 XCTAssertNil(error)
             }
         }
@@ -60,19 +60,19 @@ class SwiftySSHTests: XCTestCase {
                 self.expectation = expectation
             }
             
-            func sshSession(session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler) {
-                handler(allow: true)
+            func sshSession(_ session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler) {
+                handler(true)
             }
             
-            func sshSession(session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler) {
-                handler(authenticate: .password("vagrant1"))
+            func sshSession(_ session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler) {
+                handler(.password("vagrant1"))
             }
             
-            func sshSessionConnected(session: Session) {
+            func sshSessionConnected(_ session: Session) {
                 
             }
             
-            func sshSessionDisconnected(session: Session, error: ErrorProtocol?) {
+            func sshSessionDisconnected(_ session: Session, error: Error?) {
                 XCTAssertNotNil(error)
                 expectation.fulfill()
             }

@@ -47,7 +47,7 @@ extension ClientSocketType {
         //    unclear for the callsite to decide which one should `close()` the socket.
 
         try address.withSockAddrPointer { sockAddr, length in
-            try socket.connect(address: sockAddr, length: length)
+            try socket.connect(sockAddr, length: length)
         }
     }
     

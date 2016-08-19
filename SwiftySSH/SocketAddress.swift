@@ -22,12 +22,12 @@ enum SocketAddress {
 
     /// The length of a `sockaddr_in` as the appropriate type for low-level APIs.
     static var lengthOfVersion4: socklen_t {
-        return socklen_t(sizeof(sockaddr_in.self))
+        return socklen_t(MemoryLayout<sockaddr_in>.size)
     }
 
     /// The length of a `sockaddr_in6` as the appropriate type for low-level APIs.
     static var lengthOfVersion6: socklen_t {
-        return socklen_t(sizeof(sockaddr_in6.self))
+        return socklen_t(MemoryLayout<sockaddr_in6>.size)
     }
 
     /// Creates either a `Version4` or `Version6` socket address, depending on what `addressProvider` does.
@@ -39,28 +39,35 @@ enum SocketAddress {
     /// This initializer is intended to be used with `Darwin.accept()`.
     ///
     /// - Parameter addressProvider: A closure that will be called and is expected to fill in an address into the given buffer.
-    init( addressProvider: @noescape (UnsafeMutablePointer<sockaddr>, UnsafeMutablePointer<socklen_t>) throws -> Void) throws {
-
-        // `sockaddr_storage` is an abstract type that provides storage large enough for any concrete socket address struct:
-        var addressStorage = sockaddr_storage()
-        var addressStorageLength = socklen_t(sizeofValue(addressStorage))
-        try withUnsafeMutablePointers(&addressStorage, &addressStorageLength) {
-            try addressProvider(UnsafeMutablePointer<sockaddr>($0), $1)
-        }
-
-        switch Int32(addressStorage.ss_family) {
-        case AF_INET:
-            assert(socklen_t(addressStorage.ss_len) == SocketAddress.lengthOfVersion4)
-            self = withUnsafePointer(&addressStorage) { .version4(address: UnsafePointer<sockaddr_in>($0).pointee) }
-
-        case AF_INET6:
-            assert(socklen_t(addressStorage.ss_len) == SocketAddress.lengthOfVersion6)
-            self = withUnsafePointer(&addressStorage) { .version6(address: UnsafePointer<sockaddr_in6>($0).pointee) }
-
-        default:
-            throw Socket.Error.noAddressAvailable
-        }
-    }
+//    init( addressProvider: @escaping (UnsafeMutablePointer<sockaddr>, UnsafeMutablePointer<socklen_t>) throws -> Void) throws {
+//
+//        // `sockaddr_storage` is an abstract type that provides storage large enough for any concrete socket address struct:
+//        var addressStorage = 333
+//        var addressStorageLength = socklen_t(MemoryLayout<sockaddr_storage>.size)
+//        var tmp = withUnsafeMutablePointer(to: &addressStorage) {
+//            let k = $0.withMemoryRebound(to: sockaddr.self, capacity: MemoryLayout<sockaddr>.size) { $0.pointee }
+//            return try! addressProvider(k, &addressStorageLength)
+//        }
+//        
+//        
+////        try withUnsafeMutablePointer(&addressStorage, &addressStorageLength) {
+////            try addressProvider(UnsafeMutablePointer<sockaddr>($0), $1)
+////        }
+////
+//
+//        switch Int32(addressStorage.ss_family) {
+//        case AF_INET:
+//            assert(socklen_t(addressStorage.ss_len) == SocketAddress.lengthOfVersion4)
+//            self = withUnsafePointer(to: &tmp) { .version4(address: UnsafePointer<sockaddr_in>($0).pointee) }
+//
+//        case AF_INET6:
+//            assert(socklen_t(addressStorage.ss_len) == SocketAddress.lengthOfVersion6)
+//            self = withUnsafePointer(to: &tmp) { .version6(address: UnsafePointer<sockaddr_in6>($0).pointee) }
+//
+//        default:
+//            throw Socket.Error.noAddressAvailable
+//        }
+//    }
 
     /// Creates an instance by inspecting the given `addrinfo`'s protocol family and socket address.
     ///
@@ -69,11 +76,12 @@ enum SocketAddress {
         switch addrInfo.ai_family {
         case AF_INET:
             assert(addrInfo.ai_addrlen == SocketAddress.lengthOfVersion4)
-            self = .version4(address: UnsafePointer(addrInfo.ai_addr).pointee)
+            
+            self = .version4(address: addrInfo.ai_addr.withMemoryRebound(to: sockaddr_in.self, capacity: MemoryLayout<sockaddr_in>.size) { $0.pointee })
 
         case AF_INET6:
             assert(addrInfo.ai_addrlen == SocketAddress.lengthOfVersion6)
-            self = .version6(address: UnsafePointer(addrInfo.ai_addr).pointee)
+            self = .version6(address: addrInfo.ai_addr.withMemoryRebound(to: sockaddr_in6.self, capacity: MemoryLayout<sockaddr_in6>.size) { $0.pointee })
 
         default:
             fatalError("Unknown address size")
@@ -91,12 +99,13 @@ enum SocketAddress {
     }
 
     /// Makes a copy of `address` and calls the given closure with an `UnsafePointer<sockaddr>` to that.
-    func withSockAddrPointer<Result>( _ body: @noescape (UnsafePointer<sockaddr>, socklen_t) throws -> Result) rethrows -> Result {
+    func withSockAddrPointer<Result>( _ body: (UnsafePointer<sockaddr>, socklen_t) throws -> Result) rethrows -> Result {
 
-        func castAndCall<T>(_ address: T, _ body: @noescape (UnsafePointer<sockaddr>, socklen_t) throws -> Result) rethrows -> Result {
+        func castAndCall<T>(_ address: T, _ body: (UnsafePointer<sockaddr>, socklen_t) throws -> Result) rethrows -> Result {
             var localAddress = address // We need a `var` here for the `&`.
-            return try withUnsafePointer(&localAddress) {
-                try body(UnsafePointer<sockaddr>($0), socklen_t(sizeof(T.self)))
+            return try withUnsafePointer(to: &localAddress) {
+                let buf = $0.withMemoryRebound(to: sockaddr.self, capacity: MemoryLayout<sockaddr>.size, {$0})
+                return try body(buf, socklen_t(MemoryLayout<T>.size))
             }
         }
 

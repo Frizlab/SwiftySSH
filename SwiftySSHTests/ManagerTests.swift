@@ -22,10 +22,10 @@ class DirectTCPTests: XCTestCase {
         let manager = Manager(user: "vagrant", host:"127.0.0.1", port: 2222)
         manager.session
         .onValidate { (fingerptint, handler) in
-            handler(allow: true)
+            handler(true)
         }
         .onAuthenticate { (methods, handler) in
-            handler(authenticate: .password("vagrant"))
+            handler(.password("vagrant"))
         }
         .connect()
         
@@ -51,10 +51,10 @@ class DirectTCPTests: XCTestCase {
         let manager = Manager(user: "vagrant", host:"127.0.0.1", port: 2222)
         manager.session
             .onValidate { (fingerptint, handler) in
-                handler(allow: true)
+                handler(true)
             }
             .onAuthenticate { (methods, handler) in
-                handler(authenticate: .password("vagrant"))
+                handler(.password("vagrant"))
         }
         .connect()
         

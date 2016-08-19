@@ -10,8 +10,29 @@
 #import <arpa/inet.h>
 #import <sys/select.h>
 
-
 //FIXME: rewrite in swoft? http://swiftrien.blogspot.com/2015/11/swift-code-library-replacements-for.html
+//nonmutating set {
+//    var flags = fcntl(fileDescriptor, F_GETFL)
+//    guard flags != -1 else {
+//        let errorNumber = errno
+//        print("fcntl() failed for F_GETFL, option: \(option). \(errorNumber) \(strerror(errorNumber))")
+//        return
+//    }
+//
+//    if newValue {
+//        flags |= option
+//    } else {
+//        flags &= ~option
+//    }
+//
+//    guard fcntl(fileDescriptor, F_SETFL, flags) != -1 else {
+//        let errorNumber = errno
+//        print("fcntl() failed for F_SETFL, option: \(option). \(errorNumber) \(strerror(errorNumber))")
+//        return
+//    }
+//    }
+
+
 int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     struct timeval timeout;
     

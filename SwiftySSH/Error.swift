@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum SSHError: ErrorProtocol, CustomStringConvertible {
+public enum SSHError: Error, CustomStringConvertible {
     case notConnected
     case timeout
     case invalidFingerprint
@@ -18,17 +18,17 @@ public enum SSHError: ErrorProtocol, CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case authenticationFailed:
+        case .authenticationFailed:
             return "authentication failed"
-        case notConnected:
+        case .notConnected:
             return "Not connected"
-        case timeout:
+        case .timeout:
             return "connection timeout"
-        case invalidFingerprint:
+        case .invalidFingerprint:
             return "Invalid fingerprint"
-        case unknown(let msg):
+        case .unknown(let msg):
             return msg
-        case sshError(_, let msg):
+        case .sshError(_, let msg):
             return msg
         }
     }

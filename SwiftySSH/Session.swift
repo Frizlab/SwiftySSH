@@ -25,29 +25,29 @@ public enum AuthenticationMethods {
     init(_ value: String) {
         switch value {
         case "password":
-        self = password
+        self = .password
         case "publickey":
-        self = publicKey
+        self = .publicKey
         default:
-            self = unknown(value)
+            self = .unknown(value)
         }
     }
 }
 
 public enum SessionState {
-    case connected, disconnected(error: ErrorProtocol?), authenticated, validated, created
+    case connected, disconnected(error: Error?), authenticated, validated, created
 }
 
 public protocol SessionDelegate: class {
-    func sshSession(session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler)
-    func sshSession(session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler)
-    func sshSessionConnected(session: Session)
-    func sshSessionDisconnected(session: Session, error: ErrorProtocol?)
+    func sshSession(_ session: Session, validateFingerprint fingerprint: Fingerprint, handler: FingerprintDecisionHandler)
+    func sshSession(_ session: Session, authenticate methods: [AuthenticationMethods], handler: AuthenticationDecisionHandler)
+    func sshSessionConnected(_ session: Session)
+    func sshSessionDisconnected(_ session: Session, error: Error?)
 }
 
-public typealias FingerprintDecisionHandler = (allow: Bool)->Void
+public typealias FingerprintDecisionHandler = (_ allow: Bool)->Void
 
-public typealias AuthenticationDecisionHandler = (authenticate: Authentication)->Void
+public typealias AuthenticationDecisionHandler = (_ authenticate: Authentication)->Void
 
 typealias LIBSSH2_SESSION = OpaquePointer
 
@@ -55,19 +55,19 @@ private struct SSHInit {
     static let initialized = libssh2_init(0) == 0
 }
 
-public class Session {
+open class Session {
     internal var session: LIBSSH2_SESSION? = nil
-    public var timeout: Double = 1000
-    private let host: String
-    private let port: UInt16
-    private let user: String
-    private var authentication: Authentication?
+    open var timeout: Double = 1000
+    fileprivate let host: String
+    fileprivate let port: UInt16
+    fileprivate let user: String
+    fileprivate var authentication: Authentication?
     var queue: OperationQueue
     internal var socket: ClientSocketType?
-    private var keepAliveSource: DispatchSourceTimer!
-    private var keepaliveInterval: Int
-    private var errorCounter: UInt = 0
-    private let maxErrorCounter: UInt
+    fileprivate var keepAliveSource: DispatchSourceTimer!
+    fileprivate var keepaliveInterval: Int
+    fileprivate var errorCounter: UInt = 0
+    fileprivate let maxErrorCounter: UInt
     weak var delegate: SessionDelegate?
     
     required public init(user: String, host: String, port: UInt16, keepaliveInterval: Int, maxErrorCounter: UInt){
@@ -81,7 +81,7 @@ public class Session {
         queue.isSuspended = true
     }
     
-    private func setupKeepAlive() {
+    fileprivate func setupKeepAlive() {
         if keepAliveSource != nil {
             keepAliveSource.cancel()
             keepAliveSource = nil
@@ -93,7 +93,7 @@ public class Session {
         
         libssh2_keepalive_config (self.session, 1, UInt32(keepaliveInterval))
         
-        keepAliveSource = DispatchSource.timer(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosBackground))
+        keepAliveSource = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         
         keepAliveSource.scheduleRepeating(deadline: DispatchTime.now(), interval: DispatchTimeInterval.seconds(keepaliveInterval))
         
@@ -138,7 +138,7 @@ public class Session {
         }
     }
     
-    public func connect() {
+    open func connect() {
         guard SSHInit.initialized else {
             disconnectWithError(sshError() ?? SSHError.unknown(msg: "uninitialized session") )
             return
@@ -147,7 +147,7 @@ public class Session {
         queue.isSuspended = true
         queue.cancelAllOperations()
         
-        DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosBackground).async {
+        DispatchQueue.global(qos: .background).async {
             var s = self
             self.session = libssh2_session_init_ex(nil, nil, nil, &s)
             
@@ -175,7 +175,7 @@ public class Session {
         }
     }
     
-    private func runEvents(_ state: SessionState) {
+    fileprivate func runEvents(_ state: SessionState) {
         switch state {
         case .connected:
             checkFingerprint()
@@ -183,7 +183,7 @@ public class Session {
             authenticate()
         case .authenticated:
             self.setupKeepAlive()
-            self.delegate?.sshSessionConnected(session: self)
+            self.delegate?.sshSessionConnected(self)
             self.queue.isSuspended = false
         case .created, .disconnected:
             break
@@ -195,7 +195,7 @@ public class Session {
             disconnectWithError(SSHError.authenticationFailed)
             return
         }
-        delegate.sshSession(session: self, authenticate: authenticationMethods) { (authenticate) in
+        delegate.sshSession(self, authenticate: authenticationMethods) { (authenticate) in
             switch authenticate {
             case .password(let password):
                 do {
@@ -221,7 +221,7 @@ public class Session {
             return
         }
         
-        delegate.sshSession(session: self, validateFingerprint: self.fingerprint) { (allow) in
+        delegate.sshSession(self, validateFingerprint: self.fingerprint) { (allow) in
             guard allow else {
                 self.disconnectWithError(SSHError.invalidFingerprint)
                 return
@@ -230,18 +230,18 @@ public class Session {
         }
     }
     
-    func disconnectWithError (_ error: ErrorProtocol) {
+    func disconnectWithError (_ error: Error) {
         logger.error("closing session with error: \(error)")
-        delegate?.sshSessionDisconnected(session: self, error: error)
+        delegate?.sshSessionDisconnected(self, error: error)
         cleanup()
     }
     
-    public func disconnect() {
-        delegate?.sshSessionDisconnected(session: self, error: nil)
+    open func disconnect() {
+        delegate?.sshSessionDisconnected(self, error: nil)
         cleanup()
     }
     
-    private func cleanup() {
+    fileprivate func cleanup() {
         do {
             try socket?.socket.close()
         }
@@ -262,7 +262,7 @@ public class Session {
         }
     }
     
-    public var fingerprint: Fingerprint {
+    open var fingerprint: Fingerprint {
         let h = libssh2_hostkey_hash(session, LIBSSH2_HOSTKEY_HASH_SHA1)!
 
         return .sha1(String (format: "%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
@@ -273,7 +273,7 @@ public class Session {
                 h[16], h[17], h[18], h[19]))
     }
     
-    public var authenticationMethods: [AuthenticationMethods]? {
+    open var authenticationMethods: [AuthenticationMethods]? {
         assert(session != nil, "no session")
         guard self.session != nil else { return nil }
 
