@@ -29,14 +29,15 @@ class DirectTCPTests: XCTestCase {
         }
         .connect()
         
-        manager.request(port: 12345, send: data) { (data, error) in
-            guard let data = data, error == nil else {
+        manager.request(port: 12345, send: data) { (result) in
+            switch result {
+            case .failure(_):
                 XCTAssert(false)
-                return
+            case .success(let value):
+                let s = String(data: value, encoding: String.Encoding.utf8)
+                print(s)
+                expectation.fulfill()
             }
-            let s = String(data: data, encoding: String.Encoding.utf8)
-            print(s)
-            expectation.fulfill()
         }
         waitForExpectations(timeout: 3, handler: nil)
     }

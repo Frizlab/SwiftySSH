@@ -8,6 +8,53 @@
 
 import Foundation
 
+/// Used to represent whether a request was successful or encountered an error.
+///
+/// - success: The request and all post processing operations were successful resulting in the serialization of the
+///            provided associated value.
+///
+/// - failure: The request encountered an error resulting in a failure. The associated values are the original data
+///            provided by the server as well as the error that caused the failure.
+public enum Result<Value, Error: Swift.Error> {
+    case success(Value)
+    case failure(Error)
+    
+    /// Returns `true` if the result is a success, `false` otherwise.
+    public var isSuccess: Bool {
+        switch self {
+        case .success:
+            return true
+        case .failure:
+            return false
+        }
+    }
+    
+    /// Returns `true` if the result is a failure, `false` otherwise.
+    public var isFailure: Bool {
+        return !isSuccess
+    }
+    
+    /// Returns the associated value if the result is a success, `nil` otherwise.
+    public var value: Value? {
+        switch self {
+        case .success(let value):
+            return value
+        case .failure:
+            return nil
+        }
+    }
+    
+    /// Returns the associated error value if the result is a failure, `nil` otherwise.
+    public var error: Error? {
+        switch self {
+        case .success:
+            return nil
+        case .failure(let error):
+            return error
+        }
+    }
+}
+
 open class Manager {
     open let session: ManagedSession
 
@@ -126,7 +173,7 @@ open class Manager {
 }
 
 extension Manager {
-    public func request(_ host: String = "127.0.0.1", port: UInt16, send data: Data, receive: @escaping (Data?, Error?) -> Void) {
+    public func request(_ host: String = "127.0.0.1", port: UInt16, send data: Data, receive: @escaping (Result<Data, NSError>) -> Void) {
         
         var resultData = Data()
         
@@ -137,7 +184,7 @@ extension Manager {
         channel.onOpen {
                 channel.write(reqData) { (error) in
                     guard error == nil  else {
-                        receive(nil, error)
+                        receive(.failure(error! as NSError))
                         return
                     }
                 }
@@ -147,11 +194,11 @@ extension Manager {
             }
             .onClose { (error) in
                 guard error == nil  else {
-                    receive(nil, error)
+                    receive(.failure(error! as NSError))
                     return
                 }
                 
-                receive(resultData, nil)
+                receive(.success(resultData))
             }
             .open()
     }
