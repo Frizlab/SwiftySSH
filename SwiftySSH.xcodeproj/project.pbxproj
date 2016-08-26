@@ -24,6 +24,7 @@
 		CDC5D0971D36B85F00963281 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC5D0951D36B85F00963281 /* libssl.a */; };
 		CDC5D0981D36B85F00963281 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC5D0961D36B85F00963281 /* libcrypto.a */; };
 		CDC5D0991D36B88F00963281 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD470A2B1B868FA300D5ACE4 /* libssh2.a */; };
+		CDC65CD11D70BD8700B31E13 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC65CD01D70BD8700B31E13 /* Result.swift */; };
 		CDDA5BA01D344A89007AAE90 /* SocketAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5B9C1D344A89007AAE90 /* SocketAddress.swift */; };
 		CDDA5BA11D344A89007AAE90 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5B9D1D344A89007AAE90 /* Socket.swift */; };
 		CDDA5BA21D344A89007AAE90 /* AddressSocketType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA5B9E1D344A89007AAE90 /* AddressSocketType.swift */; };
@@ -77,6 +78,7 @@
 		CDAA1C691BB78ABC009AE9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		CDC5D0951D36B85F00963281 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = lib/lib/libssl.a; sourceTree = "<group>"; };
 		CDC5D0961D36B85F00963281 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = lib/lib/libcrypto.a; sourceTree = "<group>"; };
+		CDC65CD01D70BD8700B31E13 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		CDDA5B9C1D344A89007AAE90 /* SocketAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAddress.swift; sourceTree = "<group>"; };
 		CDDA5B9D1D344A89007AAE90 /* Socket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Socket.swift; sourceTree = "<group>"; };
 		CDDA5B9E1D344A89007AAE90 /* AddressSocketType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressSocketType.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				CD470A761B8697D900D5ACE4 /* Session.swift */,
 				CD470A711B8697D900D5ACE4 /* Channel.swift */,
 				CDAA1C691BB78ABC009AE9BD /* Utils.swift */,
+				CDC65CD01D70BD8700B31E13 /* Result.swift */,
 				CD470A721B8697D900D5ACE4 /* Error.swift */,
 				CD470A731B8697D900D5ACE4 /* Logger.swift */,
 				CD470A6F1B8697A100D5ACE4 /* SwiftySSH.h */,
@@ -330,6 +333,7 @@
 				CDDA5BA71D344AB2007AAE90 /* SocketType.swift in Sources */,
 				CDDA5BAB1D344D28007AAE90 /* ClientSocket.swift in Sources */,
 				CDDA5BA01D344A89007AAE90 /* SocketAddress.swift in Sources */,
+				CDC65CD11D70BD8700B31E13 /* Result.swift in Sources */,
 				CDDA5BA91D344BDD007AAE90 /* ClientSocketType.swift in Sources */,
 				CD156B921B87EAAF00CDD8F3 /* Manager.swift in Sources */,
 				CDDA5BA11D344A89007AAE90 /* Socket.swift in Sources */,
