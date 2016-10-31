@@ -64,61 +64,63 @@ open class Channel {
         self.readSource = DispatchSource.makeReadSource(fileDescriptor: self.session.socket!.socket.fileDescriptor, queue: queue)
         
         self.readSource.setEventHandler { [weak self] () -> Void in
-            guard let myself = self else { return }
-            
-            //                    logger.debug("data received")
-            let bufferSize = myself.bufferSize
-            let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: bufferSize)
-            defer {buffer.deallocate(capacity: bufferSize)}
-            let time = CFAbsoluteTimeGetCurrent() + myself.timeout
-            
-            
-            while myself.channel != nil {
-                let rc = libssh2_channel_read_ex(myself.channel, myself.streamId, buffer, bufferSize)
+            self?.session.queue.addOperation {
+                guard let myself = self else { return }
+
+                //                    logger.debug("data received")
+                let bufferSize = myself.bufferSize
+                let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: bufferSize)
+                defer {buffer.deallocate(capacity: bufferSize)}
+                let time = CFAbsoluteTimeGetCurrent() + myself.timeout
                 
-                if rc == ssize_t(LIBSSH2_ERROR_EAGAIN) {
-                    if (myself.timeout > 0 && time < CFAbsoluteTimeGetCurrent()) {
-                        let error = SSHError.timeout
+                
+                while myself.channel != nil {
+                    let rc = libssh2_channel_read_ex(myself.channel, myself.streamId, buffer, bufferSize)
+                    
+                    if rc == ssize_t(LIBSSH2_ERROR_EAGAIN) {
+                        if (myself.timeout > 0 && time < CFAbsoluteTimeGetCurrent()) {
+                            let error = SSHError.timeout
+                            logger.error("Error while reading: \(error)")
+                            myself.delegate?.sshChannelClosed(myself, error: error)
+                            myself.cleanup()
+                            return
+                        }
+                        logger.debug("again...")
+                        waitsocket(myself.session.socket!.socket.fileDescriptor, myself.session.session)
+                        break
+                    }
+                    else if rc < 0 {
+                        logger.error("Error reading response \(rc)")
+                        if (rc == ssize_t(LIBSSH2_ERROR_SOCKET_RECV)) {
+                            let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_read_ex \(rc)")
+                            logger.error("Error while reading: \(error)")
+                            myself.delegate?.sshChannelClosed(myself, error: error)
+                            myself.cleanup()
+                        }
+                        return
+                    }
+                    
+                    //logger.debug("got \(rc) bytes")
+                    
+                    
+                    let bufferPointer = UnsafePointer(buffer).withMemoryRebound(to: UInt8.self, capacity: rc) { $0 }
+                    let data = Array(UnsafeBufferPointer(start: bufferPointer, count: rc))
+                    myself.delegate?.sshChannel(myself, received: data)
+                    
+                    let eof = libssh2_channel_eof(myself.channel)
+                    
+                    if eof == 1 {
+                        logger.debug("channel EOF received")
+                        myself.close()
+                        return
+                    }
+                    else if eof < 0 {
+                        let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_eof \(rc)")
                         logger.error("Error while reading: \(error)")
                         myself.delegate?.sshChannelClosed(myself, error: error)
                         myself.cleanup()
                         return
                     }
-                    logger.debug("again...")
-                    waitsocket(myself.session.socket!.socket.fileDescriptor, myself.session.session)
-                    break
-                }
-                else if rc < 0 {
-                    logger.error("Error reading response \(rc)")
-                    if (rc == ssize_t(LIBSSH2_ERROR_SOCKET_RECV)) {
-                        let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_read_ex \(rc)")
-                        logger.error("Error while reading: \(error)")
-                        myself.delegate?.sshChannelClosed(myself, error: error)
-                        myself.cleanup()
-                    }
-                    return
-                }
-                
-                //logger.debug("got \(rc) bytes")
-                
-                
-                let bufferPointer = UnsafePointer(buffer).withMemoryRebound(to: UInt8.self, capacity: rc) { $0 }
-                let data = Array(UnsafeBufferPointer(start: bufferPointer, count: rc))
-                myself.delegate?.sshChannel(myself, received: data)
-                
-                let eof = libssh2_channel_eof(myself.channel)
-                
-                if eof == 1 {
-                    logger.debug("channel EOF received")
-                    myself.close()
-                    return
-                }
-                else if eof < 0 {
-                    let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_eof \(rc)")
-                    logger.error("Error while reading: \(error)")
-                    myself.delegate?.sshChannelClosed(myself, error: error)
-                    myself.cleanup()
-                    return
                 }
             }
         }
