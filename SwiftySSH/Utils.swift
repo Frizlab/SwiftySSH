@@ -23,11 +23,7 @@ func callSSH(_ session: Session, _ timeout: CFAbsoluteTime, _ f: @autoclosure ()
         rc = f()
     }
     if rc != LIBSSH2_ERROR_NONE {
-        if let error = session.sshError() {
-            throw error
-        }
-        
-        throw SSHError.unknown(msg: "Unknown SSH error \(rc)")
+        throw session.sshError()
     }
     
     return rc
@@ -47,11 +43,7 @@ func callSSHNotNull(_ session: Session, _ timeout: CFAbsoluteTime, _ f: @autoclo
             }
         }
         else {
-            if let error = session.sshError() {
-                throw error
-            }
-            
-            throw SSHError.unknown(msg: "Unknown SSH error \(rc)")
+            throw session.sshError()
         }
         
         rc = f()

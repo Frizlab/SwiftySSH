@@ -92,7 +92,7 @@ open class Channel {
                     else if rc < 0 {
                         logger.error("Error reading response \(rc)")
                         if (rc == ssize_t(LIBSSH2_ERROR_SOCKET_RECV)) {
-                            let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_read_ex \(rc)")
+                            let error = myself.session.sshError()
                             logger.error("Error while reading: \(error)")
                             myself.delegate?.sshChannelClosed(myself, error: error)
                             myself.cleanup()
@@ -115,7 +115,7 @@ open class Channel {
                         return
                     }
                     else if eof < 0 {
-                        let error = myself.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_eof \(rc)")
+                        let error = myself.session.sshError()
                         logger.error("Error while reading: \(error)")
                         myself.delegate?.sshChannelClosed(myself, error: error)
                         myself.cleanup()
@@ -175,7 +175,7 @@ open class Channel {
                 }
                 
                 if  rc < 0 {
-                    let error = self.session.sshError() ?? SSHError.unknown(msg: "libssh2_channel_write \(rc)")
+                    let error = self.session.sshError()
                     logger.error("libssh2_channel_write \(error)")
                     handler(error)
                     return

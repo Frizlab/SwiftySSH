@@ -106,7 +106,7 @@ open class Session {
                 self.errorCounter += 1
                 if self.errorCounter >= self.maxErrorCounter {
                     logger.debug("too many errors, closing session")
-                    self.disconnectWithError(self.sshError() ?? SSHError.notConnected)
+                    self.disconnectWithError(self.sshError())
                 }
                 return
             }
@@ -117,18 +117,13 @@ open class Session {
         keepAliveSource.resume()
     }
     
-    func sshError() -> SSHError? {
-        
+    func sshError() -> SSHError {
         guard session != nil else {
-            return nil
+            return .notConnected
         }
         
         var message: UnsafeMutablePointer<Int8>? = nil
         let code = libssh2_session_last_error(session, &message, nil, 0)
-        
-        if code == LIBSSH2_ERROR_NONE {
-            return nil
-        }
         
         if let msg = message {
             return SSHError.sshError(code: code, msg: String(cString: msg))
@@ -140,7 +135,7 @@ open class Session {
     
     open func connect() {
         guard SSHInit.initialized else {
-            disconnectWithError(sshError() ?? SSHError.unknown(msg: "uninitialized session") )
+            disconnectWithError(sshError())
             return
         }
         
